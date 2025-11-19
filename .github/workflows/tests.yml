@@ -46,6 +46,12 @@ jobs:
       - name: Install project with dev extras
         run: |
           uv pip install -e .[dev] --system
+
+      - name: Check code formatting/linting requirements
+        uses: astral-sh/ruff-action@v3
+        with:
+          version: "latest"
+        run: ruff check src/ tests/ scripts/ examples/
       
       - name: Generate SDK
         run: python scripts/build_tools.py
