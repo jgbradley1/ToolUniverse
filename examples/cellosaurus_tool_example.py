@@ -20,7 +20,11 @@ def main():
         },
         {
             "name": "cellosaurus_get_cell_line_info",
-            "arguments": {"accession": "CVCL_0030", "format": "json", "fields": ["id", "ox", "char"]},
+            "arguments": {
+                "accession": "CVCL_0030",
+                "format": "json",
+                "fields": ["id", "ox", "char"],
+            },
         },
     ]
 

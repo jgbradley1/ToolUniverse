@@ -16,14 +16,20 @@ import json
 from unittest.mock import Mock, patch
 from tooluniverse.base_tool import BaseTool
 from tooluniverse.exceptions import (
-    ToolError, ToolValidationError, ToolAuthError, ToolRateLimitError,
-    ToolUnavailableError, ToolConfigError, ToolDependencyError, ToolServerError
+    ToolError,
+    ToolValidationError,
+    ToolAuthError,
+    ToolRateLimitError,
+    ToolUnavailableError,
+    ToolConfigError,
+    ToolDependencyError,
+    ToolServerError,
 )
 
 
 class TestTool(BaseTool):
     """Test tool implementation for testing BaseTool capabilities."""
-    
+
     def run(self, arguments=None):
         return "test_result"
 
@@ -42,12 +48,12 @@ class TestBaseToolCapabilities:
                 "properties": {
                     "required_param": {"type": "string"},
                     "optional_param": {"type": "integer"},
-                    "boolean_param": {"type": "boolean"}
+                    "boolean_param": {"type": "boolean"},
                 },
-                "required": ["required_param"]
+                "required": ["required_param"],
             },
             "supports_streaming": True,
-            "cacheable": False
+            "cacheable": False,
         }
         self.tool = TestTool(self.tool_config)
 
@@ -56,18 +62,16 @@ class TestBaseToolCapabilities:
         arguments = {
             "required_param": "test_value",
             "optional_param": 42,
-            "boolean_param": True
+            "boolean_param": True,
         }
-        
+
         result = self.tool.validate_parameters(arguments)
         assert result is None
 
     def test_validate_parameters_missing_required(self):
         """Test validation failure for missing required parameter."""
-        arguments = {
-            "optional_param": 42
-        }
-        
+        arguments = {"optional_param": 42}
+
         result = self.tool.validate_parameters(arguments)
         assert isinstance(result, ToolValidationError)
         assert "required_param" in str(result)
@@ -76,9 +80,9 @@ class TestBaseToolCapabilities:
         """Test validation failure for wrong parameter type."""
         arguments = {
             "required_param": "test_value",
-            "optional_param": "not_an_integer"  # Should be integer
+            "optional_param": "not_an_integer",  # Should be integer
         }
-        
+
         result = self.tool.validate_parameters(arguments)
         assert isinstance(result, ToolValidationError)
         assert "integer" in str(result)  # Check for type error message
@@ -87,7 +91,7 @@ class TestBaseToolCapabilities:
         """Test validation with no schema."""
         tool_config = {"name": "no_schema_tool"}
         tool = TestTool(tool_config)
-        
+
         result = tool.validate_parameters({"any": "value"})
         assert result is None
 
@@ -97,9 +101,9 @@ class TestBaseToolCapabilities:
             Exception("Authentication failed"),
             Exception("401 Unauthorized"),
             Exception("Invalid API key"),
-            Exception("Token expired")
+            Exception("Token expired"),
         ]
-        
+
         for exc in auth_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolAuthError)
@@ -110,9 +114,9 @@ class TestBaseToolCapabilities:
         rate_limit_exceptions = [
             Exception("Rate limit exceeded"),
             Exception("429 Too Many Requests"),
-            Exception("Quota exceeded")
+            Exception("Quota exceeded"),
         ]
-        
+
         for exc in rate_limit_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolRateLimitError)
@@ -124,9 +128,9 @@ class TestBaseToolCapabilities:
             Exception("Service unavailable"),
             Exception("Connection timeout"),
             Exception("404 Not Found"),
-            Exception("Network error")
+            Exception("Network error"),
         ]
-        
+
         for exc in unavailable_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolUnavailableError)
@@ -137,9 +141,9 @@ class TestBaseToolCapabilities:
         validation_exceptions = [
             Exception("Invalid parameter"),
             Exception("Schema validation failed"),
-            Exception("Parameter validation error")
+            Exception("Parameter validation error"),
         ]
-        
+
         for exc in validation_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolValidationError)
@@ -150,9 +154,9 @@ class TestBaseToolCapabilities:
         config_exceptions = [
             Exception("Configuration error"),
             Exception("Setup failed"),
-            Exception("Config setup error")
+            Exception("Config setup error"),
         ]
-        
+
         for exc in config_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolConfigError)
@@ -164,9 +168,9 @@ class TestBaseToolCapabilities:
             Exception("Import error"),
             Exception("Dependency missing"),
             Exception("Package error"),
-            Exception("Module import failed")
+            Exception("Module import failed"),
         ]
-        
+
         for exc in dependency_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolDependencyError)
@@ -177,9 +181,9 @@ class TestBaseToolCapabilities:
         server_exceptions = [
             Exception("Internal server error"),
             Exception("Something went wrong"),
-            Exception("Unknown error")
+            Exception("Unknown error"),
         ]
-        
+
         for exc in server_exceptions:
             result = self.tool.handle_error(exc)
             assert isinstance(result, ToolServerError)
@@ -188,15 +192,15 @@ class TestBaseToolCapabilities:
     def test_get_cache_key(self):
         """Test cache key generation."""
         arguments = {"param1": "value1", "param2": 42}
-        
+
         cache_key = self.tool.get_cache_key(arguments)
         assert isinstance(cache_key, str)
         assert len(cache_key) == 32  # MD5 hash length
-        
+
         # Same arguments should produce same cache key
         cache_key2 = self.tool.get_cache_key(arguments)
         assert cache_key == cache_key2
-        
+
         # Different arguments should produce different cache key
         different_args = {"param1": "different_value", "param2": 42}
         cache_key3 = self.tool.get_cache_key(different_args)
@@ -205,17 +209,17 @@ class TestBaseToolCapabilities:
     def test_get_cache_key_deterministic(self):
         """Test that cache key generation is deterministic."""
         arguments = {"param1": "value1", "param2": 42}
-        
+
         # Generate multiple times
         keys = [self.tool.get_cache_key(arguments) for _ in range(5)]
-        
+
         # All should be the same
         assert all(key == keys[0] for key in keys)
 
     def test_supports_streaming(self):
         """Test streaming support detection."""
         assert self.tool.supports_streaming() is True
-        
+
         # Test tool without streaming support
         no_streaming_config = {"name": "no_streaming_tool"}
         no_streaming_tool = TestTool(no_streaming_config)
@@ -224,7 +228,7 @@ class TestBaseToolCapabilities:
     def test_supports_caching(self):
         """Test caching support detection."""
         assert self.tool.supports_caching() is False  # Set to False in config
-        
+
         # Test tool with caching support
         caching_config = {"name": "caching_tool", "cacheable": True}
         caching_tool = TestTool(caching_config)
@@ -233,7 +237,7 @@ class TestBaseToolCapabilities:
     def test_get_tool_info(self):
         """Test tool info retrieval."""
         info = self.tool.get_tool_info()
-        
+
         assert info["name"] == "test_tool"
         assert info["description"] == "A test tool"
         assert info["supports_streaming"] is True
@@ -246,16 +250,14 @@ class TestBaseToolCapabilities:
         """Test required parameters retrieval."""
         required_params = self.tool.get_required_parameters()
         assert required_params == ["required_param"]
-        
+
         # Test tool with no required parameters
         no_required_config = {
             "name": "no_required_tool",
             "parameter": {
                 "type": "object",
-                "properties": {
-                    "optional_param": {"type": "string"}
-                }
-            }
+                "properties": {"optional_param": {"type": "string"}},
+            },
         }
         no_required_tool = TestTool(no_required_config)
         assert no_required_tool.get_required_parameters() == []
@@ -266,16 +268,16 @@ class TestCustomToolValidation:
 
     class CustomValidationTool(BaseTool):
         """Tool with custom validation logic."""
-        
+
         def validate_parameters(self, arguments):
             """Custom validation that requires 'custom_field'."""
             if "custom_field" not in arguments:
                 return ToolValidationError(
                     "Custom field is required",
-                    details={"custom_rule": "custom_field_must_be_present"}
+                    details={"custom_rule": "custom_field_must_be_present"},
                 )
             return None
-        
+
         def run(self, arguments=None):
             return "custom_result"
 
@@ -283,13 +285,13 @@ class TestCustomToolValidation:
         """Test custom validation logic."""
         tool_config = {"name": "custom_tool"}
         tool = self.CustomValidationTool(tool_config)
-        
+
         # Should fail without custom_field
         result = tool.validate_parameters({"other_field": "value"})
         assert isinstance(result, ToolValidationError)
         assert "Custom field is required" in str(result)
         assert result.details["custom_rule"] == "custom_field_must_be_present"
-        
+
         # Should pass with custom_field
         result = tool.validate_parameters({"custom_field": "value"})
         assert result is None

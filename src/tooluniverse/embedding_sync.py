@@ -310,13 +310,13 @@ class EmbeddingSync(BaseTool):
         return f"""# {database_name} - Embedding Database
 
 ## Description
-{description or 'Embedding database created with ToolUniverse'}
+{description or "Embedding database created with ToolUniverse"}
 
 ## Database Information
-- **Documents**: {db_info.get('document_count', 'Unknown')}
-- **Embedding Model**: {db_info.get('embedding_model', 'Unknown')}
-- **Dimensions**: {db_info.get('embedding_dimensions', 'Unknown')}
-- **Created**: {db_info.get('created_at', 'Unknown')}
+- **Documents**: {db_info.get("document_count", "Unknown")}
+- **Embedding Model**: {db_info.get("embedding_model", "Unknown")}
+- **Dimensions**: {db_info.get("embedding_dimensions", "Unknown")}
+- **Created**: {db_info.get("created_at", "Unknown")}
 
 ## Usage
 

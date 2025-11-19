@@ -17,21 +17,20 @@ except ImportError:
 
 async def main():
     server = StdioServerParameters(
-        command="uv",
-        args=["run", "tooluniverse-smcp-stdio", "--no-search"]
+        command="uv", args=["run", "tooluniverse-smcp-stdio", "--no-search"]
     )
 
     async with stdio_client(server) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
-            
+
             args = {
                 "query": "gene:MEIOB",
-                "limit": "5"  # String!
+                "limit": "5",  # String!
             }
-            
+
             result = await session.call_tool("UniProt_search", args)
-            
+
             for content in result.content:
                 print(content.text)
 

@@ -73,9 +73,7 @@ async def test_search_methods():
     # Initialize server
     print("\n📦 Initializing SMCP server...")
     server = SMCP(name="Test Server", search_enabled=True)
-    print(
-        f"✅ Server initialized, loaded {len(server._exposed_tools)} tools"
-    )
+    print(f"✅ Server initialized, loaded {len(server._exposed_tools)} tools")
 
     # Test query
     query = "protein analysis"
@@ -159,7 +157,9 @@ async def test_search_methods():
         "method": "tools/find",
         "params": {"search_method": "auto", "limit": 3},  # Missing query
     }
-    result = await server._handle_tools_find(request_id=request["id"], params=request["params"])  # type: ignore[attr-defined]
+    result = await server._handle_tools_find(
+        request_id=request["id"], params=request["params"]
+    )  # type: ignore[attr-defined]
     print_result(result)
 
     print("\n✅ All tests completed!")

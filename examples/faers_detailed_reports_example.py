@@ -24,7 +24,7 @@ import sys
 import os
 import json
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from src.tooluniverse import ToolUniverse  # noqa: E402
 
@@ -40,17 +40,17 @@ def example_search_basic_reports():
     tu = ToolUniverse()
     tu.load_tools()
 
-    result = tu.run({
-        "name": "FAERS_search_adverse_event_reports",
-        "arguments": {
-            "medicinalproduct": "Donanemab",
-            "limit": 3
-        }
-    }, use_cache=False)
+    result = tu.run(
+        {
+            "name": "FAERS_search_adverse_event_reports",
+            "arguments": {"medicinalproduct": "Donanemab", "limit": 3},
+        },
+        use_cache=False,
+    )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print("Example 1: Basic Adverse Event Reports Search")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
     print(f"Found {len(result) if isinstance(result, list) else 0} reports")
 
     if isinstance(result, list) and len(result) > 0:
@@ -59,14 +59,15 @@ def example_search_basic_reports():
         for i, report in enumerate(reports_to_show):
             report_json = json.dumps(report, indent=2, ensure_ascii=False)
             if len(report_json) > MAX_JSON_LENGTH:
-                report_json = (report_json[:MAX_JSON_LENGTH] +
-                               "\n... (truncated)")
-            print(f"\n--- Report {i+1} of {len(reports_to_show)} ---")
+                report_json = report_json[:MAX_JSON_LENGTH] + "\n... (truncated)"
+            print(f"\n--- Report {i + 1} of {len(reports_to_show)} ---")
             print(report_json)
         if len(result) > MAX_REPORTS_TO_SHOW:
             remaining = len(result) - MAX_REPORTS_TO_SHOW
-            print(f"\n... and {remaining} more reports "
-                  f"(showing first {MAX_REPORTS_TO_SHOW} only)")
+            print(
+                f"\n... and {remaining} more reports "
+                f"(showing first {MAX_REPORTS_TO_SHOW} only)"
+            )
     else:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     return result
@@ -77,18 +78,21 @@ def example_search_by_reaction():
     tu = ToolUniverse()
     tu.load_tools()
 
-    result = tu.run({
-        "name": "FAERS_search_reports_by_drug_and_reaction",
-        "arguments": {
-            "medicinalproduct": "Donanemab",
-            "reactionmeddrapt": "INFUSION RELATED REACTION",
-            "limit": 2
-        }
-    }, use_cache=False)
+    result = tu.run(
+        {
+            "name": "FAERS_search_reports_by_drug_and_reaction",
+            "arguments": {
+                "medicinalproduct": "Donanemab",
+                "reactionmeddrapt": "INFUSION RELATED REACTION",
+                "limit": 2,
+            },
+        },
+        use_cache=False,
+    )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print("Example 2: Search by Drug and Specific Reaction")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
     print(f"Found {len(result) if isinstance(result, list) else 0} reports")
 
     if isinstance(result, list) and len(result) > 0:
@@ -96,14 +100,15 @@ def example_search_by_reaction():
         for i, report in enumerate(reports_to_show):
             report_json = json.dumps(report, indent=2, ensure_ascii=False)
             if len(report_json) > MAX_JSON_LENGTH:
-                report_json = (report_json[:MAX_JSON_LENGTH] +
-                               "\n... (truncated)")
-            print(f"\n--- Report {i+1} of {len(reports_to_show)} ---")
+                report_json = report_json[:MAX_JSON_LENGTH] + "\n... (truncated)"
+            print(f"\n--- Report {i + 1} of {len(reports_to_show)} ---")
             print(report_json)
         if len(result) > MAX_REPORTS_TO_SHOW:
             remaining = len(result) - MAX_REPORTS_TO_SHOW
-            print(f"\n... and {remaining} more reports "
-                  f"(showing first {MAX_REPORTS_TO_SHOW} only)")
+            print(
+                f"\n... and {remaining} more reports "
+                f"(showing first {MAX_REPORTS_TO_SHOW} only)"
+            )
     else:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     return result
@@ -114,18 +119,21 @@ def example_search_serious_reports():
     tu = ToolUniverse()
     tu.load_tools()
 
-    result = tu.run({
-        "name": "FAERS_search_serious_reports_by_drug",
-        "arguments": {
-            "medicinalproduct": "Donanemab",
-            "seriousnessdeath": "Yes",
-            "limit": 2
-        }
-    }, use_cache=False)
+    result = tu.run(
+        {
+            "name": "FAERS_search_serious_reports_by_drug",
+            "arguments": {
+                "medicinalproduct": "Donanemab",
+                "seriousnessdeath": "Yes",
+                "limit": 2,
+            },
+        },
+        use_cache=False,
+    )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print("Example 3: Search for Serious Adverse Events (Fatal Cases)")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
     print(f"Found {len(result) if isinstance(result, list) else 0} reports")
 
     if isinstance(result, list) and len(result) > 0:
@@ -133,14 +141,15 @@ def example_search_serious_reports():
         for i, report in enumerate(reports_to_show):
             report_json = json.dumps(report, indent=2, ensure_ascii=False)
             if len(report_json) > MAX_JSON_LENGTH:
-                report_json = (report_json[:MAX_JSON_LENGTH] +
-                               "\n... (truncated)")
-            print(f"\n--- Report {i+1} of {len(reports_to_show)} ---")
+                report_json = report_json[:MAX_JSON_LENGTH] + "\n... (truncated)"
+            print(f"\n--- Report {i + 1} of {len(reports_to_show)} ---")
             print(report_json)
         if len(result) > MAX_REPORTS_TO_SHOW:
             remaining = len(result) - MAX_REPORTS_TO_SHOW
-            print(f"\n... and {remaining} more reports "
-                  f"(showing first {MAX_REPORTS_TO_SHOW} only)")
+            print(
+                f"\n... and {remaining} more reports "
+                f"(showing first {MAX_REPORTS_TO_SHOW} only)"
+            )
     else:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     return result
@@ -151,18 +160,21 @@ def example_search_by_indication():
     tu = ToolUniverse()
     tu.load_tools()
 
-    result = tu.run({
-        "name": "FAERS_search_reports_by_drug_and_indication",
-        "arguments": {
-            "medicinalproduct": "Donanemab",
-            "drugindication": "Dementia",
-            "limit": 2
-        }
-    }, use_cache=False)
+    result = tu.run(
+        {
+            "name": "FAERS_search_reports_by_drug_and_indication",
+            "arguments": {
+                "medicinalproduct": "Donanemab",
+                "drugindication": "Dementia",
+                "limit": 2,
+            },
+        },
+        use_cache=False,
+    )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print("Example 4: Search by Drug and Indication")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
     print(f"Found {len(result) if isinstance(result, list) else 0} reports")
 
     if isinstance(result, list) and len(result) > 0:
@@ -170,14 +182,15 @@ def example_search_by_indication():
         for i, report in enumerate(reports_to_show):
             report_json = json.dumps(report, indent=2, ensure_ascii=False)
             if len(report_json) > MAX_JSON_LENGTH:
-                report_json = (report_json[:MAX_JSON_LENGTH] +
-                               "\n... (truncated)")
-            print(f"\n--- Report {i+1} of {len(reports_to_show)} ---")
+                report_json = report_json[:MAX_JSON_LENGTH] + "\n... (truncated)"
+            print(f"\n--- Report {i + 1} of {len(reports_to_show)} ---")
             print(report_json)
         if len(result) > MAX_REPORTS_TO_SHOW:
             remaining = len(result) - MAX_REPORTS_TO_SHOW
-            print(f"\n... and {remaining} more reports "
-                  f"(showing first {MAX_REPORTS_TO_SHOW} only)")
+            print(
+                f"\n... and {remaining} more reports "
+                f"(showing first {MAX_REPORTS_TO_SHOW} only)"
+            )
     else:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     return result
@@ -188,18 +201,21 @@ def example_search_by_outcome():
     tu = ToolUniverse()
     tu.load_tools()
 
-    result = tu.run({
-        "name": "FAERS_search_reports_by_drug_and_outcome",
-        "arguments": {
-            "medicinalproduct": "Donanemab",
-            "reactionoutcome": "Fatal",
-            "limit": 2
-        }
-    }, use_cache=False)
+    result = tu.run(
+        {
+            "name": "FAERS_search_reports_by_drug_and_outcome",
+            "arguments": {
+                "medicinalproduct": "Donanemab",
+                "reactionoutcome": "Fatal",
+                "limit": 2,
+            },
+        },
+        use_cache=False,
+    )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print("Example 5: Search by Reaction Outcome")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
     print(f"Found {len(result) if isinstance(result, list) else 0} reports")
 
     if isinstance(result, list) and len(result) > 0:
@@ -207,14 +223,15 @@ def example_search_by_outcome():
         for i, report in enumerate(reports_to_show):
             report_json = json.dumps(report, indent=2, ensure_ascii=False)
             if len(report_json) > MAX_JSON_LENGTH:
-                report_json = (report_json[:MAX_JSON_LENGTH] +
-                               "\n... (truncated)")
-            print(f"\n--- Report {i+1} of {len(reports_to_show)} ---")
+                report_json = report_json[:MAX_JSON_LENGTH] + "\n... (truncated)"
+            print(f"\n--- Report {i + 1} of {len(reports_to_show)} ---")
             print(report_json)
         if len(result) > MAX_REPORTS_TO_SHOW:
             remaining = len(result) - MAX_REPORTS_TO_SHOW
-            print(f"\n... and {remaining} more reports "
-                  f"(showing first {MAX_REPORTS_TO_SHOW} only)")
+            print(
+                f"\n... and {remaining} more reports "
+                f"(showing first {MAX_REPORTS_TO_SHOW} only)"
+            )
     else:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     return result
@@ -225,17 +242,17 @@ def example_search_drug_interactions():
     tu = ToolUniverse()
     tu.load_tools()
 
-    result = tu.run({
-        "name": "FAERS_search_reports_by_drug_combination",
-        "arguments": {
-            "medicinalproducts": ["Donanemab", "Aspirin"],
-            "limit": 2
-        }
-    }, use_cache=False)
+    result = tu.run(
+        {
+            "name": "FAERS_search_reports_by_drug_combination",
+            "arguments": {"medicinalproducts": ["Donanemab", "Aspirin"], "limit": 2},
+        },
+        use_cache=False,
+    )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print("Example 6: Search for Drug Interaction Reports")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
     print(f"Found {len(result) if isinstance(result, list) else 0} reports")
 
     if isinstance(result, list) and len(result) > 0:
@@ -243,14 +260,15 @@ def example_search_drug_interactions():
         for i, report in enumerate(reports_to_show):
             report_json = json.dumps(report, indent=2, ensure_ascii=False)
             if len(report_json) > MAX_JSON_LENGTH:
-                report_json = (report_json[:MAX_JSON_LENGTH] +
-                               "\n... (truncated)")
-            print(f"\n--- Report {i+1} of {len(reports_to_show)} ---")
+                report_json = report_json[:MAX_JSON_LENGTH] + "\n... (truncated)"
+            print(f"\n--- Report {i + 1} of {len(reports_to_show)} ---")
             print(report_json)
         if len(result) > MAX_REPORTS_TO_SHOW:
             remaining = len(result) - MAX_REPORTS_TO_SHOW
-            print(f"\n... and {remaining} more reports "
-                  f"(showing first {MAX_REPORTS_TO_SHOW} only)")
+            print(
+                f"\n... and {remaining} more reports "
+                f"(showing first {MAX_REPORTS_TO_SHOW} only)"
+            )
     else:
         print(json.dumps(result, indent=2, ensure_ascii=False))
     return result
@@ -258,9 +276,9 @@ def example_search_drug_interactions():
 
 def main():
     """Run all examples"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("FAERS Detailed Adverse Event Report Tools - Usage Examples")
-    print("="*80)
+    print("=" * 80)
     print("\nThese examples demonstrate how to retrieve detailed case reports")
     print("from the FDA Adverse Event Reporting System (FAERS).")
     print("\nNote: Results may vary based on available data in FAERS.")
@@ -281,16 +299,16 @@ def main():
         except Exception as e:
             print(f"\n❌ Error in {name} example: {e}")
             import traceback
+
             traceback.print_exc()
 
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("Summary")
-    print("="*80)
+    print("=" * 80)
     print("\nAll examples completed!")
     print("\nKey Points:")
     print("  • These tools return detailed case reports (not just counts)")
-    print("  • Each report contains patient info, drugs, reactions, "
-          "and outcomes")
+    print("  • Each report contains patient info, drugs, reactions, and outcomes")
     print("  • Use 'limit' parameter to control number of results (1-100)")
     print("  • Use 'skip' parameter for pagination")
     print("  • All tools require at least one drug name (medicinalproduct)")

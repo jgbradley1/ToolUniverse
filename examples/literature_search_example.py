@@ -26,14 +26,16 @@ tu.load_tools()
 #   "arguments": {"query": "machine learning", "limit": 2,
 #                  "sort_by": "relevance"}
 # })
-result1 = tu.run({
-    "name": "ArXiv_search_papers",
-    "arguments": {
-        "query": "machine learning",
-        "limit": 2,
-        "sort_by": "relevance",
-    },
-})
+result1 = tu.run(
+    {
+        "name": "ArXiv_search_papers",
+        "arguments": {
+            "query": "machine learning",
+            "limit": 2,
+            "sort_by": "relevance",
+        },
+    }
+)
 
 # =============================================================================
 # Method 2: PubMed Article Search
@@ -44,14 +46,16 @@ result1 = tu.run({
 #   "arguments": {"query": "cancer immunotherapy", "limit": 2,
 #                  "sort_by": "relevance"}
 # })
-result2 = tu.run({
-    "name": "PubMed_search_articles",
-    "arguments": {
-        "query": "cancer immunotherapy",
-        "limit": 2,
-        "sort_by": "relevance",
-    },
-})
+result2 = tu.run(
+    {
+        "name": "PubMed_search_articles",
+        "arguments": {
+            "query": "cancer immunotherapy",
+            "limit": 2,
+            "sort_by": "relevance",
+        },
+    }
+)
 
 # =============================================================================
 # Method 3: EuropePMC Article Search
@@ -61,10 +65,12 @@ result2 = tu.run({
 #   "name": "EuropePMC_search_articles",
 #   "arguments": {"query": "COVID-19 vaccine", "limit": 2}
 # })
-result3 = tu.run({
-    "name": "EuropePMC_search_articles",
-    "arguments": {"query": "COVID-19 vaccine", "limit": 2},
-})
+result3 = tu.run(
+    {
+        "name": "EuropePMC_search_articles",
+        "arguments": {"query": "COVID-19 vaccine", "limit": 2},
+    }
+)
 
 # =============================================================================
 # Method 4: Performance Timing
@@ -73,10 +79,12 @@ result3 = tu.run({
 # Syntax:
 # start_time = time.time(); result = tu.run(...); end_time = time.time()
 start_time = time.time()
-result4 = tu.run({
-    "name": "ArXiv_search_papers",
-    "arguments": {"query": "artificial intelligence", "limit": 1},
-})
+result4 = tu.run(
+    {
+        "name": "ArXiv_search_papers",
+        "arguments": {"query": "artificial intelligence", "limit": 1},
+    }
+)
 end_time = time.time()
 execution_time = end_time - start_time
 ok_flag = isinstance(result4, (list, dict))
@@ -88,13 +96,15 @@ print(f"Timing: {execution_time:.2f}s, ok={ok_flag}")
 # Description: Handle potential errors and timeouts in search operations
 # Syntax: try/except blocks around search calls
 try:
-    _ = tu.run({
-        "name": "ArXiv_search_papers",
-        "arguments": {
-            "query": "complex query that might timeout",
-            "limit": 100,
-        },
-    })
+    _ = tu.run(
+        {
+            "name": "ArXiv_search_papers",
+            "arguments": {
+                "query": "complex query that might timeout",
+                "limit": 100,
+            },
+        }
+    )
 except Exception as e:
     if "timeout" in str(e).lower():
         print("Timeout handled")
@@ -157,24 +167,28 @@ for q in search_queries:
 # Syntax: Adjust limit, sort_by, and other parameters
 
 # Small limit for quick testing
-quick_result = tu.run({
-    "name": "ArXiv_search_papers",
-    "arguments": {
-        "query": "quantum computing",
-        "limit": 1,
-        "sort_by": "relevance",
-    },
-})
+quick_result = tu.run(
+    {
+        "name": "ArXiv_search_papers",
+        "arguments": {
+            "query": "quantum computing",
+            "limit": 1,
+            "sort_by": "relevance",
+        },
+    }
+)
 
 # Larger limit for comprehensive results
-comprehensive_result = tu.run({
-    "name": "ArXiv_search_papers",
-    "arguments": {
-        "query": "quantum computing",
-        "limit": 10,
-        "sort_by": "relevance",
-    },
-})
+comprehensive_result = tu.run(
+    {
+        "name": "ArXiv_search_papers",
+        "arguments": {
+            "query": "quantum computing",
+            "limit": 10,
+            "sort_by": "relevance",
+        },
+    }
+)
 
 # =============================================================================
 # Method 9: Result Validation
@@ -199,9 +213,7 @@ is_valid, message = validate_search_result(result1, "ArXiv_search_papers")
 print(f"Validation: {message}")
 is_valid, message = validate_search_result(result2, "PubMed_search_articles")
 print(f"Validation: {message}")
-is_valid, message = validate_search_result(
-    result3, "EuropePMC_search_articles"
-)
+is_valid, message = validate_search_result(result3, "EuropePMC_search_articles")
 print(f"Validation: {message}")
 
 # =============================================================================
@@ -251,10 +263,12 @@ quick_tools = [
 for name, args in quick_tools:
     print(f"\n=== Running {name} ===")
     try:
-        res = tu.run_one_function({
-            "name": name,
-            "arguments": args,
-        })
+        res = tu.run_one_function(
+            {
+                "name": name,
+                "arguments": args,
+            }
+        )
         status = "OK" if isinstance(res, (list, dict)) else "UNKNOWN"
         print(status)
     except Exception as err:

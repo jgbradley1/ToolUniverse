@@ -15,9 +15,13 @@ import os
 import json
 
 # Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
-from tooluniverse.file_download_tool import FileDownloadTool, BinaryDownloadTool, TextDownloadTool
+from tooluniverse.file_download_tool import (
+    FileDownloadTool,
+    BinaryDownloadTool,
+    TextDownloadTool,
+)
 
 
 def example_1_basic_download():
@@ -40,7 +44,7 @@ def example_1_basic_download():
         print(f"  Type: {result['content_type']}")
 
         # Read and display content
-        with open(result['file_path']) as f:
+        with open(result["file_path"]) as f:
             data = json.load(f)
             print(f"\n  Content preview:")
             print(f"  Title: {data.get('title', 'N/A')[:50]}...")
@@ -64,11 +68,7 @@ def example_2_custom_path():
     output_path = "./downloaded_data/example.json"
     url = "https://jsonplaceholder.typicode.com/posts/2"
 
-    result = tool.run({
-        "url": url,
-        "output_path": output_path,
-        "timeout": 30
-    })
+    result = tool.run({"url": url, "output_path": output_path, "timeout": 30})
 
     if "file_path" in result:
         print(f"✓ File downloaded to custom location!")
@@ -92,11 +92,7 @@ def example_3_return_content():
 
     # Download and return content directly
     url = "https://jsonplaceholder.typicode.com/posts/3"
-    result = tool.run({
-        "url": url,
-        "return_content": True,
-        "timeout": 30
-    })
+    result = tool.run({"url": url, "return_content": True, "timeout": 30})
 
     if "content" in result:
         print(f"✓ Content downloaded successfully!")
@@ -104,7 +100,7 @@ def example_3_return_content():
         print(f"  Type: {result['content_type']}")
 
         # Parse JSON content
-        data = json.loads(result['content'])
+        data = json.loads(result["content"])
         print(f"\n  Parsed JSON data:")
         print(f"  Post ID: {data.get('id', 'N/A')}")
         print(f"  Title: {data.get('title', 'N/A')[:60]}...")
@@ -128,11 +124,7 @@ def example_4_binary_download():
     url = "https://httpbin.org/image/jpeg"
     output_path = "./downloaded_data/test_image.jpg"
 
-    result = tool.run({
-        "url": url,
-        "output_path": output_path,
-        "timeout": 30
-    })
+    result = tool.run({"url": url, "output_path": output_path, "timeout": 30})
 
     if "file_path" in result:
         print(f"✓ Binary file downloaded successfully!")
@@ -142,11 +134,11 @@ def example_4_binary_download():
         print(f"  HTTP Status: {result['status_code']}")
 
         # Show size in human-readable format
-        size_kb = result['size'] / 1024
+        size_kb = result["size"] / 1024
         if size_kb < 1024:
             print(f"  Size: {size_kb:.2f} KB")
         else:
-            print(f"  Size: {size_kb/1024:.2f} MB")
+            print(f"  Size: {size_kb / 1024:.2f} MB")
         return True
     else:
         print(f"✗ Error: {result.get('error', 'Unknown')}")
@@ -174,7 +166,7 @@ def example_5_text_download():
 
         # Show content preview
         print(f"\n  Content preview (first 10 lines):")
-        lines = result['content'].split('\n')[:10]
+        lines = result["content"].split("\n")[:10]
         for i, line in enumerate(lines, 1):
             print(f"  {i}: {line}")
         return True
@@ -194,13 +186,15 @@ def example_6_custom_timeout():
 
     # Download with custom settings for large file
     url = "https://jsonplaceholder.typicode.com/posts"
-    result = tool.run({
-        "url": url,
-        "output_path": "./downloaded_data/all_posts.json",
-        "timeout": 60,  # 60 seconds timeout
-        "chunk_size": 16384,  # 16KB chunks (larger for bigger files)
-        "follow_redirects": True
-    })
+    result = tool.run(
+        {
+            "url": url,
+            "output_path": "./downloaded_data/all_posts.json",
+            "timeout": 60,  # 60 seconds timeout
+            "chunk_size": 16384,  # 16KB chunks (larger for bigger files)
+            "follow_redirects": True,
+        }
+    )
 
     if "file_path" in result:
         print(f"✓ File downloaded with custom settings!")
@@ -225,10 +219,12 @@ def example_7_error_handling():
     tool = FileDownloadTool(config)
 
     # Try to download from invalid URL
-    result = tool.run({
-        "url": "https://invalid-url-that-does-not-exist.example.com/file.txt",
-        "timeout": 5
-    })
+    result = tool.run(
+        {
+            "url": "https://invalid-url-that-does-not-exist.example.com/file.txt",
+            "timeout": 5,
+        }
+    )
 
     if "error" in result:
         print(f"✓ Error handled correctly!")
@@ -258,11 +254,9 @@ def example_8_batch_download():
 
     successful = 0
     for url, filename in urls:
-        result = tool.run({
-            "url": url,
-            "output_path": f"./downloaded_data/{filename}",
-            "timeout": 30
-        })
+        result = tool.run(
+            {"url": url, "output_path": f"./downloaded_data/{filename}", "timeout": 30}
+        )
 
         if "file_path" in result:
             print(f"  ✓ {filename}: {result['file_size']} bytes")
@@ -280,13 +274,10 @@ def cleanup_files():
     print("Cleaning Up Downloaded Files")
     print("=" * 70)
 
-    files_to_remove = [
-        "./downloaded_data/",
-        "./example.json",
-        "./all_posts.json"
-    ]
+    files_to_remove = ["./downloaded_data/", "./example.json", "./all_posts.json"]
 
     import shutil
+
     for path in files_to_remove:
         if os.path.exists(path):
             try:
@@ -361,5 +352,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ Examples failed: {e}")
         import traceback
-        traceback.print_exc()
 
+        traceback.print_exc()

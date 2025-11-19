@@ -19,7 +19,7 @@ tu.load_tools()
 # Test missing required parameter
 try:
     result1 = tu.tools.UniProt_get_entry_by_accession()
-except Exception as e:
+except Exception:
     # Handle missing required parameter error
     pass
 
@@ -32,10 +32,10 @@ except Exception as e:
 # Wrong parameter type - string instead of integer
 try:
     result2 = tu.tools.openalex_literature_search(
-        search_keywords="AI", 
-        max_results="ten"  # Should be integer
+        search_keywords="AI",
+        max_results="ten",  # Should be integer
     )
-except Exception as e:
+except Exception:
     # Handle type validation error
     pass
 
@@ -48,10 +48,10 @@ except Exception as e:
 # Value out of range - exceeds maximum allowed
 try:
     result3 = tu.tools.openalex_literature_search(
-        search_keywords="AI", 
-        max_results=500  # Above maximum of 200
+        search_keywords="AI",
+        max_results=500,  # Above maximum of 200
     )
-except Exception as e:
+except Exception:
     # Handle range validation error
     pass
 
@@ -65,7 +65,7 @@ except Exception as e:
 try:
     result4 = tu.tools.UniProt_get_entry_by_accession(accession="P05067")
     # Success: Got result of expected type
-except Exception as e:
+except Exception:
     # Handle unexpected error
     pass
 
@@ -77,13 +77,13 @@ except Exception as e:
 
 try:
     result5 = tu.tools.UniProt_get_entry_by_accession(accession="")
-except ToolValidationError as e:
+except ToolValidationError:
     # Handle structured validation error
     # e.message contains error description
     # e.field contains the problematic field name
     # e.value contains the invalid value
     pass
-except Exception as e:
+except Exception:
     # Handle other types of errors
     pass
 
@@ -93,14 +93,16 @@ except Exception as e:
 # Description: Tools can perform additional validation beyond schema validation
 # Syntax: Custom validation logic in tool.run() method
 
+
 # Example of how tools might implement custom validation
 def example_custom_validation():
     try:
         # This might trigger custom validation logic in the tool
         result6 = tu.tools.UniProt_get_entry_by_accession(accession="INVALID_FORMAT")
-    except Exception as e:
+    except Exception:
         # Handle custom validation error
         pass
+
 
 # =============================================================================
 # Summary of Validation Types
@@ -111,7 +113,7 @@ def example_custom_validation():
 # - Values outside allowed ranges
 # - Invalid parameter names
 # - Malformed parameter values
-# 
+#
 # Validation provides:
 # - Clear error messages
 # - Structured error information

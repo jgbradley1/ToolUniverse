@@ -206,10 +206,10 @@ test_queries = [
 
 # Step 4: Loop through all test cases and print example output
 for idx, query in enumerate(test_queries):
-    print(f"\n{'='*80}")
-    print(f"[{idx+1}] Running tool: {query['name']}")
+    print(f"\n{'=' * 80}")
+    print(f"[{idx + 1}] Running tool: {query['name']}")
     print(f"Arguments: {query['arguments']}")
-    print(f"{'='*80}")
+    print(f"{'=' * 80}")
 
     try:
         result = tooluni.run(query)

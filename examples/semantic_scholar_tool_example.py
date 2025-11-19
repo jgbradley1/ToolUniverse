@@ -17,7 +17,7 @@ test_queries = [
 
 for idx, query in enumerate(test_queries):
     print(
-        f"\n[{idx+1}] Running tool: {query['name']} with arguments: {query['arguments']}"
+        f"\n[{idx + 1}] Running tool: {query['name']} with arguments: {query['arguments']}"
     )
     result = tooluni.run(query)
     print("✅ Success. Example output snippet:")

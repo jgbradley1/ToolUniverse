@@ -98,7 +98,7 @@ def lazy_import_tool(tool_name):
     Lazily import a tool by name without importing all tool modules.
     Only imports the specific module containing the requested tool.
     """
-    global _tool_registry, _lazy_registry, _lazy_cache  # noqa: F824
+    global _tool_registry, _lazy_registry, _lazy_cache
 
     # If tool is already in registry, return it
     if tool_name in _tool_registry:
@@ -162,7 +162,7 @@ def build_lazy_registry(package_name=None):
     Build a mapping of tool names to module names using config files and naming patterns.
     This is truly lazy - it doesn't import any modules, just creates the mapping.
     """
-    global _lazy_registry  # noqa: F824
+    global _lazy_registry
 
     if package_name is None:
         package_name = "tooluniverse"

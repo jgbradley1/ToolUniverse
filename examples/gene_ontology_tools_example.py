@@ -53,7 +53,7 @@ print("--- Starting Gene Ontology (GO) Tool Test ---")
 
 for idx, q in enumerate(test_queries, 1):
     print(
-        f"\n{'='*80}\n[{idx}] {q['name']}({', '.join([f'{k}={v}' for k, v in q['arguments'].items()])})"
+        f"\n{'=' * 80}\n[{idx}] {q['name']}({', '.join([f'{k}={v}' for k, v in q['arguments'].items()])})"
     )
     res = tooluni.run(q)
 

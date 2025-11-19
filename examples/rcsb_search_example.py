@@ -26,9 +26,7 @@ print("=" * 80)
 print("Searching for structures similar to a protein sequence...")
 
 # Use a longer, well-known protein sequence (insulin)
-sequence = (
-    "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN"  # noqa: E501
-)
+sequence = "MALWMRLLPLLALLALWGPDPAAAFVNQHLCGSHLVEALYLVCGERGFFYTPKTRREAEDLQVGQVELGGGPGAGSLQPLALEGSLQKRGIVEQCCTSICSLYQLENYCN"  # noqa: E501
 
 result1 = tu.run(
     {
@@ -154,10 +152,7 @@ elif "results" in result5:
     for i, res in enumerate(result5["results"][:5], 1):
         print(f"  {i}. PDB ID: {res.get('pdb_id')}, Rank: {res.get('rank')}")
     if result5["results"]:
-        print(
-            "\n  Note: You can use these PDB IDs for structure "
-            "similarity search"
-        )
+        print("\n  Note: You can use these PDB IDs for structure similarity search")
 else:
     print(json.dumps(result5, indent=2, ensure_ascii=False)[:500])
 
@@ -200,14 +195,9 @@ if "results" in text_result and text_result["results"]:
     if "error" in similar_result:
         print(f"Error: {similar_result['error']}")
     elif "results" in similar_result:
-        print(
-            f"Found {similar_result.get('total_found', 0)} similar structures:"
-        )
+        print(f"Found {similar_result.get('total_found', 0)} similar structures:")
         for i, res in enumerate(similar_result["results"][:5], 1):
-            print(
-                f"  {i}. PDB ID: {res.get('pdb_id')}, "
-                f"Rank: {res.get('rank')}"
-            )
+            print(f"  {i}. PDB ID: {res.get('pdb_id')}, Rank: {res.get('rank')}")
     else:
         print(json.dumps(similar_result, indent=2, ensure_ascii=False)[:500])
 else:
@@ -217,15 +207,11 @@ print("\n" + "=" * 80)
 print("Examples completed!")
 print("=" * 80)
 print(
-    "\nNote: For real searches, use valid PDB IDs, protein sequences, "
-    "or search text."
+    "\nNote: For real searches, use valid PDB IDs, protein sequences, or search text."
 )
 print("This tool is particularly useful for finding similar structures")
 print("for antibodies, proteins, and other biologics that cannot be")
-print(
-    "searched using SMILES-based tools like "
-    "ChEMBL_search_similar_molecules."
-)
+print("searched using SMILES-based tools like ChEMBL_search_similar_molecules.")
 print(
     "\nText search allows you to find PDB IDs from drug names, "
     "protein names, or keywords, completing the workflow: "

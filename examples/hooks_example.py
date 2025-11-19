@@ -21,9 +21,9 @@ from tooluniverse import ToolUniverse
 
 def basic_hooks_example():
     """Basic hook usage - simple and clear"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("🔧 BASIC HOOKS EXAMPLE")
-    print("="*60)
+    print("=" * 60)
     print("Demonstrating SummarizationHook with OpenTargets tool")
     print()
 
@@ -35,17 +35,19 @@ def basic_hooks_example():
 
     # 2. Run a tool that produces long output
     print("\nStep 2: Running OpenTargets tool (produces long output)...")
-    result = tu.run({
-        "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
-        "arguments": {"ensemblId": "ENSG00000012048"}
-    })
+    result = tu.run(
+        {
+            "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
+            "arguments": {"ensemblId": "ENSG00000012048"},
+        }
+    )
     print("✅ Tool execution completed")
 
     # 3. Show results
     print("\nStep 3: Analyzing results...")
     if isinstance(result, dict) and "summary" in result:
-        original_len = result.get('original_length', 0)
-        summary_len = len(result['summary'])
+        original_len = result.get("original_length", 0)
+        summary_len = len(result["summary"])
         if original_len > 0:
             reduction = (original_len - summary_len) / original_len * 100
         else:
@@ -64,27 +66,27 @@ def basic_hooks_example():
 
 def file_save_hook_example():
     """FileSaveHook example - saves large outputs to files"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("🔧 FILE SAVE HOOK EXAMPLE")
-    print("="*60)
+    print("=" * 60)
     print("Demonstrating FileSaveHook for large output archiving")
     print()
 
     # Configure FileSaveHook for large outputs
     hook_config = {
-        "hooks": [{
-            "name": "file_save_hook",
-            "type": "FileSaveHook",
-            "enabled": True,
-            "conditions": {
-                "output_length": {"operator": ">", "threshold": 1000}
-            },
-            "hook_config": {
-                "temp_dir": tempfile.gettempdir(),
-                "file_prefix": "tool_output",
-                "include_metadata": True
+        "hooks": [
+            {
+                "name": "file_save_hook",
+                "type": "FileSaveHook",
+                "enabled": True,
+                "conditions": {"output_length": {"operator": ">", "threshold": 1000}},
+                "hook_config": {
+                    "temp_dir": tempfile.gettempdir(),
+                    "file_prefix": "tool_output",
+                    "include_metadata": True,
+                },
             }
-        }]
+        ]
     }
 
     print("Step 1: Configuring FileSaveHook...")
@@ -93,23 +95,25 @@ def file_save_hook_example():
     print("✅ FileSaveHook configured and enabled")
 
     print("\nStep 2: Running tool with FileSaveHook...")
-    result = tu.run({
-        "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
-        "arguments": {"ensemblId": "ENSG00000012048"}
-    })
+    result = tu.run(
+        {
+            "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
+            "arguments": {"ensemblId": "ENSG00000012048"},
+        }
+    )
     print("✅ Tool execution completed")
 
     print("\nStep 3: Analyzing FileSaveHook results...")
     if isinstance(result, dict) and "file_path" in result:
-        file_size = result.get('file_size', 0)
-        data_format = result.get('data_format', 'unknown')
+        file_size = result.get("file_size", 0)
+        data_format = result.get("data_format", "unknown")
 
         print(f"📁 File saved: {result['file_path']}")
         print(f"📊 Data format: {data_format}")
         print(f"📏 File size: {file_size:,} bytes")
 
         # Verify file exists
-        if os.path.exists(result['file_path']):
+        if os.path.exists(result["file_path"]):
             print("✅ File verification: SUCCESS")
         else:
             print("❌ File verification: FAILED")
@@ -123,9 +127,9 @@ def file_save_hook_example():
 
 def performance_comparison():
     """Compare performance with and without hooks"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("🔧 PERFORMANCE COMPARISON")
-    print("="*60)
+    print("=" * 60)
     print("Comparing execution time and output size with/without hooks")
     print()
 
@@ -135,10 +139,12 @@ def performance_comparison():
     tu_no_hooks.load_tools()
 
     start_time = time.time()
-    result_no_hooks = tu_no_hooks.run({
-        "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
-        "arguments": {"ensemblId": "ENSG00000012048"}
-    })
+    result_no_hooks = tu_no_hooks.run(
+        {
+            "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
+            "arguments": {"ensemblId": "ENSG00000012048"},
+        }
+    )
     time_no_hooks = time.time() - start_time
     print(f"✅ Completed in {time_no_hooks:.2f} seconds")
 
@@ -148,25 +154,25 @@ def performance_comparison():
     tu_with_hooks.load_tools()
 
     start_time = time.time()
-    result_with_hooks = tu_with_hooks.run({
-        "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
-        "arguments": {"ensemblId": "ENSG00000012048"}
-    })
+    result_with_hooks = tu_with_hooks.run(
+        {
+            "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
+            "arguments": {"ensemblId": "ENSG00000012048"},
+        }
+    )
     time_with_hooks = time.time() - start_time
     print(f"✅ Completed in {time_with_hooks:.2f} seconds")
 
     # Show comparison
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("📊 PERFORMANCE RESULTS")
-    print("="*60)
+    print("=" * 60)
     print(f"{'Configuration':<20} {'Time':<10} {'Output Size':<15}")
     print("-" * 60)
     no_hooks_size = len(str(result_no_hooks))
     with_hooks_size = len(str(result_with_hooks))
-    print(f"{'No hooks':<20} {time_no_hooks:.2f}s{'':<4} "
-          f"{no_hooks_size:,} chars")
-    print(f"{'With hooks':<20} {time_with_hooks:.2f}s{'':<4} "
-          f"{with_hooks_size:,} chars")
+    print(f"{'No hooks':<20} {time_no_hooks:.2f}s{'':<4} {no_hooks_size:,} chars")
+    print(f"{'With hooks':<20} {time_with_hooks:.2f}s{'':<4} {with_hooks_size:,} chars")
 
     if time_no_hooks > 0:
         overhead = (time_with_hooks - time_no_hooks) / time_no_hooks * 100
@@ -186,27 +192,27 @@ def performance_comparison():
 
 def custom_hook_config_example():
     """Custom hook configuration example"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("🔧 CUSTOM HOOK CONFIGURATION")
-    print("="*60)
+    print("=" * 60)
     print("Demonstrating custom SummarizationHook settings")
     print()
 
     # Custom configuration with specific settings
     custom_config = {
-        "hooks": [{
-            "name": "custom_summary_hook",
-            "type": "SummarizationHook",
-            "enabled": True,
-            "conditions": {
-                "output_length": {"operator": ">", "threshold": 5000}
-            },
-            "hook_config": {
-                "max_tokens": 1000,
-                "summary_style": "concise",
-                "chunk_size": 2000
+        "hooks": [
+            {
+                "name": "custom_summary_hook",
+                "type": "SummarizationHook",
+                "enabled": True,
+                "conditions": {"output_length": {"operator": ">", "threshold": 5000}},
+                "hook_config": {
+                    "max_tokens": 1000,
+                    "summary_style": "concise",
+                    "chunk_size": 2000,
+                },
             }
-        }]
+        ]
     }
 
     print("Step 1: Configuring custom SummarizationHook...")
@@ -220,16 +226,18 @@ def custom_hook_config_example():
     print("✅ Custom configuration applied")
 
     print("\nStep 2: Running tool with custom configuration...")
-    result = tu.run({
-        "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
-        "arguments": {"ensemblId": "ENSG00000012048"}
-    })
+    result = tu.run(
+        {
+            "name": "OpenTargets_get_target_gene_ontology_by_ensemblID",
+            "arguments": {"ensemblId": "ENSG00000012048"},
+        }
+    )
     print("✅ Tool execution completed")
 
     print("\nStep 3: Analyzing custom hook results...")
     if isinstance(result, dict) and "summary" in result:
-        summary_len = len(result['summary'])
-        original_len = result.get('original_length', 0)
+        summary_len = len(result["summary"])
+        original_len = result.get("original_length", 0)
         if original_len > 0:
             reduction = (original_len - summary_len) / original_len * 100
         else:
@@ -266,9 +274,9 @@ def main():
         performance_comparison()
         custom_hook_config_example()
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("🎉 ALL EXAMPLES COMPLETED SUCCESSFULLY!")
-        print("="*60)
+        print("=" * 60)
         print()
         print("💡 Key Takeaways:")
         print("• Hooks automatically process tool outputs")

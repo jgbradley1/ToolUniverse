@@ -23,35 +23,29 @@ result1 = tu.tools.UniProt_get_entry_by_accession(accession="P05067")
 # =============================================================================
 # Syntax: tu.tools.ToolName(parameter=value, use_cache=True)
 # Description: Enables caching for repeated calls with same parameters
-result2 = tu.tools.UniProt_get_entry_by_accession(
-    accession="P05067", 
-    use_cache=True
-)
+result2 = tu.tools.UniProt_get_entry_by_accession(accession="P05067", use_cache=True)
 
 # =============================================================================
 # Method 3: Traditional JSON-Based Calling
 # =============================================================================
 # Syntax: tu.run_one_function({'name': 'ToolName', 'arguments': {...}})
 # Description: Original method using JSON structure for tool name and arguments
-result3 = tu.run_one_function({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {"accession": "P05067"}
-})
+result3 = tu.run_one_function(
+    {"name": "UniProt_get_entry_by_accession", "arguments": {"accession": "P05067"}}
+)
 
 # =============================================================================
 # Method 4: Multiple Individual Calls
 # =============================================================================
 # Description: Execute multiple tools individually (alternative to batch calling)
 # Syntax: Multiple tu.run_one_function() calls
-result4a = tu.run_one_function({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {"accession": "P05067"}
-})
+result4a = tu.run_one_function(
+    {"name": "UniProt_get_entry_by_accession", "arguments": {"accession": "P05067"}}
+)
 
-result4b = tu.run_one_function({
-    "name": "UniProt_get_entry_by_accession", 
-    "arguments": {"accession": "P12345"}
-})
+result4b = tu.run_one_function(
+    {"name": "UniProt_get_entry_by_accession", "arguments": {"accession": "P12345"}}
+)
 
 # =============================================================================
 # Method 5: Tool Discovery and Dynamic Calling

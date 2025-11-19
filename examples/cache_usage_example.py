@@ -41,9 +41,13 @@ def main():
     #   - TOOLUNIVERSE_CACHE_ENABLED: toggles caching globally.
     #   - TOOLUNIVERSE_CACHE_PERSIST: enables the SQLite layer.
     # ------------------------------------------------------------------
-    cache_dir = Path(os.environ.get("TOOLUNIVERSE_CACHE_DIR", Path.home() / ".tooluniverse"))
+    cache_dir = Path(
+        os.environ.get("TOOLUNIVERSE_CACHE_DIR", Path.home() / ".tooluniverse")
+    )
     cache_dir.mkdir(parents=True, exist_ok=True)
-    os.environ.setdefault("TOOLUNIVERSE_CACHE_PATH", str(cache_dir / "example_cache.sqlite"))
+    os.environ.setdefault(
+        "TOOLUNIVERSE_CACHE_PATH", str(cache_dir / "example_cache.sqlite")
+    )
     os.environ.setdefault("TOOLUNIVERSE_CACHE_ENABLED", "true")
     os.environ.setdefault("TOOLUNIVERSE_CACHE_PERSIST", "true")
 

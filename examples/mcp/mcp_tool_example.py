@@ -183,7 +183,7 @@ successful_tests = 0
 failed_tests = 0
 
 for idx, query in enumerate(test_queries):
-    print(f"\n[Test {idx+1}/{len(test_queries)}] {query['name']}")
+    print(f"\n[Test {idx + 1}/{len(test_queries)}] {query['name']}")
     print(f"Operation: {query['arguments'].get('operation', 'N/A')}")
 
     if "tool_name" in query["arguments"]:
@@ -229,7 +229,7 @@ print("=" * 60)
 print(f"✅ Successful tests: {successful_tests}")
 print(f"❌ Failed tests: {failed_tests}")
 print(
-    f"📊 Success rate: {(successful_tests/(successful_tests + failed_tests)*100):.1f}%"
+    f"📊 Success rate: {(successful_tests / (successful_tests + failed_tests) * 100):.1f}%"
 )
 
 # if failed_tests > 0:

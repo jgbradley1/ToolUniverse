@@ -22,15 +22,12 @@ result1 = tu.tools.UniProt_get_entry_by_accession(accession="P05067")
 # Error handling for non-existent tools
 try:
     tu.tools.NonExistentTool(some_param="test")
-except AttributeError as e:
+except AttributeError:
     # Handle non-existent tool error
     pass
 
 # Caching functionality
-result2 = tu.tools.UniProt_get_entry_by_accession(
-    accession="P05067", 
-    use_cache=True
-)
+result2 = tu.tools.UniProt_get_entry_by_accession(accession="P05067", use_cache=True)
 
 # Lifecycle management
 tu.tools.refresh()
@@ -53,7 +50,7 @@ result3 = UniProt_get_entry_by_accession(accession="P05067")
 # Structured error handling
 try:
     result4 = UniProt_get_entry_by_accession(accession="invalid")
-except ToolValidationError as e:
+except ToolValidationError:
     # Handle structured validation errors
     # e.next_steps contains suggested actions
     # e.retriable indicates if retry is possible
@@ -66,31 +63,31 @@ except ToolValidationError as e:
 # Syntax: tu.run_one_function({'name': 'ToolName', 'arguments': {...}})
 
 # Basic JSON calling
-result5 = tu.run_one_function({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {"accession": "P05067"}
-})
+result5 = tu.run_one_function(
+    {"name": "UniProt_get_entry_by_accession", "arguments": {"accession": "P05067"}}
+)
 
 # Error scenarios with JSON calling
 error_scenarios = [
     {
         "name": "Non-existent tool",
-        "call": lambda: tu.tools.NonExistentTool(param="test")
+        "call": lambda: tu.tools.NonExistentTool(param="test"),
     },
     {
         "name": "Invalid parameters",
-        "call": lambda: tu.run_one_function({
-            "name": "UniProt_get_entry_by_accession",
-            "arguments": {"invalid_param": "test"}
-        })
+        "call": lambda: tu.run_one_function(
+            {
+                "name": "UniProt_get_entry_by_accession",
+                "arguments": {"invalid_param": "test"},
+            }
+        ),
     },
     {
         "name": "Missing required parameter",
-        "call": lambda: tu.run_one_function({
-            "name": "UniProt_get_entry_by_accession", 
-            "arguments": {}
-        })
-    }
+        "call": lambda: tu.run_one_function(
+            {"name": "UniProt_get_entry_by_accession", "arguments": {}}
+        ),
+    },
 ]
 
 # Test error scenarios
@@ -103,7 +100,7 @@ for scenario in error_scenarios:
             error_details = result.get("error_details", {})
             # error_details contains: type, retriable, next_steps
             pass
-    except Exception as e:
+    except Exception:
         # Handle exception-based errors
         pass
 
@@ -113,15 +110,13 @@ for scenario in error_scenarios:
 # Description: Execute multiple tools individually (alternative to batch calling)
 # Syntax: Multiple tu.run_one_function() calls
 
-result6a = tu.run_one_function({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {"accession": "P05067"}
-})
+result6a = tu.run_one_function(
+    {"name": "UniProt_get_entry_by_accession", "arguments": {"accession": "P05067"}}
+)
 
-result6b = tu.run_one_function({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {"accession": "P12345"}
-})
+result6b = tu.run_one_function(
+    {"name": "UniProt_get_entry_by_accession", "arguments": {"accession": "P12345"}}
+)
 
 # =============================================================================
 # Method 5: Tool Discovery and Dynamic Selection

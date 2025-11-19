@@ -18,7 +18,9 @@ from tooluniverse.tools import (
 )
 
 
-def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breast cancer"):
+def gene_expression_analysis_workflow(
+    gene_list: list, cancer_type: str = "breast cancer"
+):
     """
     Comprehensive gene expression analysis workflow.
 
@@ -45,33 +47,31 @@ def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breas
     print("\n1. Retrieving gene information...")
     for gene in gene_list:
         print(f"   Analyzing {gene}...")
-        
+
         # Search for gene
         gene_search = HPA_search_genes_by_query(search_query=gene)
-        
-        if gene_search and 'genes' in gene_search and gene_search['genes']:
-            gene_info = gene_search['genes'][0]
-            ensembl_id = gene_info['ensembl_id']
-            gene_symbol = gene_info['gene_name']
-            
+
+        if gene_search and "genes" in gene_search and gene_search["genes"]:
+            gene_info = gene_search["genes"][0]
+            ensembl_id = gene_info["ensembl_id"]
+            gene_symbol = gene_info["gene_name"]
+
             print(f"     Ensembl ID: {ensembl_id}")
             print(f"     Gene symbol: {gene_symbol}")
-            
+
             # Store basic gene info
-            results["genes"].append({
-                "symbol": gene_symbol,
-                "ensembl_id": ensembl_id,
-                "query": gene
-            })
+            results["genes"].append(
+                {"symbol": gene_symbol, "ensembl_id": ensembl_id, "query": gene}
+            )
 
     # Step 2: Comprehensive gene details
     print("\n2. Retrieving comprehensive gene details...")
     for gene_data in results["genes"]:
         ensembl_id = gene_data["ensembl_id"]
         symbol = gene_data["symbol"]
-        
+
         print(f"   Getting details for {symbol}...")
-        
+
         try:
             details = HPA_get_comprehensive_gene_details_by_ensembl_id(
                 ensembl_id=ensembl_id
@@ -87,9 +87,9 @@ def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breas
     for gene_data in results["genes"]:
         ensembl_id = gene_data["ensembl_id"]
         symbol = gene_data["symbol"]
-        
+
         print(f"   Analyzing expression for {symbol}...")
-        
+
         try:
             # Get expression in different cell lines
             expression = HPA_get_comparative_expression_by_gene_and_cellline(
@@ -106,9 +106,9 @@ def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breas
     for gene_data in results["genes"]:
         ensembl_id = gene_data["ensembl_id"]
         symbol = gene_data["symbol"]
-        
+
         print(f"   Analyzing cancer prognosis for {symbol}...")
-        
+
         try:
             prognostics = HPA_get_cancer_prognostics_by_gene(ensembl_id=ensembl_id)
             if prognostics:
@@ -122,9 +122,9 @@ def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breas
     for gene_data in results["genes"]:
         ensembl_id = gene_data["ensembl_id"]
         symbol = gene_data["symbol"]
-        
+
         print(f"   Analyzing biological processes for {symbol}...")
-        
+
         try:
             processes = HPA_get_biological_processes_by_gene(ensembl_id=ensembl_id)
             if processes:
@@ -138,14 +138,14 @@ def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breas
     for gene_data in results["genes"]:
         ensembl_id = gene_data["ensembl_id"]
         symbol = gene_data["symbol"]
-        
+
         print(f"   Analyzing disease expression for {symbol}...")
-        
+
         try:
             disease_expr = HPA_get_disease_expression_by_gene_tissue_disease(
                 ensembl_id=ensembl_id,
-                tissue=cancer_type.lower().replace(' ', '_'),
-                disease=cancer_type.lower().replace(' ', '_')
+                tissue=cancer_type.lower().replace(" ", "_"),
+                disease=cancer_type.lower().replace(" ", "_"),
             )
             if disease_expr:
                 print(f"     Found disease expression data")
@@ -156,21 +156,20 @@ def gene_expression_analysis_workflow(gene_list: list, cancer_type: str = "breas
     # Step 7: Pathway enrichment analysis
     print("\n7. Performing pathway enrichment analysis...")
     gene_symbols = [g["symbol"] for g in results["genes"]]
-    
+
     if gene_symbols:
         enrichment_libs = [
             "GO_Biological_Process_2023",
             "GO_Molecular_Function_2023",
             "MSigDB_Hallmark_2020",
-            "Reactome_Pathways_2024"
+            "Reactome_Pathways_2024",
         ]
-        
+
         try:
             pathway_analysis = enrichr_gene_enrichment_analysis(
-                gene_list=gene_symbols,
-                libs=enrichment_libs
+                gene_list=gene_symbols, libs=enrichment_libs
             )
-            
+
             if pathway_analysis:
                 print("   Pathway enrichment completed")
                 for lib in enrichment_libs:
@@ -195,13 +194,12 @@ if __name__ == "__main__":
     # Example usage
     results = gene_expression_analysis_workflow(
         gene_list=["BRCA1", "BRCA2", "TP53", "PTEN", "PIK3CA"],
-        cancer_type="breast cancer"
+        cancer_type="breast cancer",
     )
-    
+
     print(f"\nResults summary:")
     print(f"- Genes analyzed: {len(results['genes'])}")
     print(f"- Expression data: {len(results['expression_data'])} genes")
     print(f"- Cancer prognostics: {len(results['cancer_prognostics'])} genes")
     print(f"- Biological processes: {len(results['biological_processes'])} genes")
     print(f"- Pathway enrichment: {len(results['pathway_enrichment'])} libraries")
-

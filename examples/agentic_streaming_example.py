@@ -171,7 +171,10 @@ def main() -> None:
         print(chunk, end="", flush=True)
 
     result = tu.run_one_function(
-        {"name": TOOL_NAME, "arguments": {"request": question, "_tooluniverse_stream": True}},
+        {
+            "name": TOOL_NAME,
+            "arguments": {"request": question, "_tooluniverse_stream": True},
+        },
         stream_callback=handle_stream,
     )
 

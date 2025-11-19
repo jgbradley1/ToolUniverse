@@ -51,11 +51,11 @@ def main():
     print(f"3. Tools loaded: {len(all_tools)} tools")
 
     # 4. Check category count
-    categories = config.get('tools', {}).get('categories', [])
+    categories = config.get("tools", {}).get("categories", [])
     print(f"4. Categories configured: {len(categories)} categories")
 
     # 5. Check LLM configuration
-    llm_config = config.get('llm_config', {})
+    llm_config = config.get("llm_config", {})
     if llm_config:
         print("5. LLM Configuration:")
         print(f"   Provider: {llm_config.get('default_provider')}")
@@ -63,72 +63,76 @@ def main():
         print(f"   Temperature: {llm_config.get('temperature')}")
 
     # 6. Check Hooks configuration
-    hooks = config.get('hooks', [])
+    hooks = config.get("hooks", [])
     print(f"6. Hooks configured: {len(hooks)} hooks")
     for i, hook in enumerate(hooks):
-        print(f"   Hook {i+1}: {hook.get('type')}")
+        print(f"   Hook {i + 1}: {hook.get('type')}")
 
     # 7. Test Hooks functionality
     print("7. Testing Hooks functionality...")
     try:
         # Test if hooks are actually working by checking if they're registered
-        if hasattr(tu, 'hook_manager') and tu.hook_manager:
+        if hasattr(tu, "hook_manager") and tu.hook_manager:
             print("   ✅ Hook manager is active")
             # Check if output hooks are enabled
-            if hasattr(tu.hook_manager, 'output_hooks_enabled'):
-                print(f"   ✅ Output hooks enabled: {tu.hook_manager.output_hooks_enabled}")
+            if hasattr(tu.hook_manager, "output_hooks_enabled"):
+                print(
+                    f"   ✅ Output hooks enabled: {tu.hook_manager.output_hooks_enabled}"
+                )
             else:
                 print("   ⚠️  Output hooks status unknown")
         else:
             print("   ❌ Hook manager not found")
-        
+
         # Test if hook tools are loaded (look for output_summarization tools)
-        hook_tools = [tool for tool in all_tools 
-                     if 'output_summarization' in tool.get('name', '').lower()]
+        hook_tools = [
+            tool
+            for tool in all_tools
+            if "output_summarization" in tool.get("name", "").lower()
+        ]
         if hook_tools:
             print(f"   ✅ Hook tools loaded: {len(hook_tools)} tools")
             for tool in hook_tools[:3]:  # Show first 3
                 print(f"      - {tool.get('name')}")
         else:
             print("   ⚠️  No output summarization hook tools found")
-            
+
         # Check if hooks are actually applied by looking at the configuration
         applied_hooks = []
-        if hasattr(tu, '_applied_hooks'):
+        if hasattr(tu, "_applied_hooks"):
             applied_hooks = tu._applied_hooks
-        elif hasattr(tu, 'hook_manager') and hasattr(tu.hook_manager, 'hooks'):
+        elif hasattr(tu, "hook_manager") and hasattr(tu.hook_manager, "hooks"):
             if isinstance(tu.hook_manager.hooks, dict):
                 applied_hooks = list(tu.hook_manager.hooks.keys())
             elif isinstance(tu.hook_manager.hooks, list):
                 applied_hooks = tu.hook_manager.hooks
             else:
                 applied_hooks = []
-        
+
         if applied_hooks:
             print(f"   ✅ Applied hooks: {applied_hooks}")
         else:
             print("   ⚠️  No applied hooks found")
-            
+
         # Check if output hooks are actually enabled by looking at the log output
         # The log shows "Output hooks enabled" which means hooks are working
         print("   ✅ Hooks are working (confirmed by log output)")
-            
+
     except Exception as e:
         print(f"   ❌ Hook testing failed: {e}")
 
     # 8. Check environment variables
     print("8. Environment variables:")
-    llm_vars = ['TOOLUNIVERSE_LLM_DEFAULT_PROVIDER',
-                'TOOLUNIVERSE_LLM_TEMPERATURE']
+    llm_vars = ["TOOLUNIVERSE_LLM_DEFAULT_PROVIDER", "TOOLUNIVERSE_LLM_TEMPERATURE"]
     for var in llm_vars:
-        value = os.environ.get(var, 'Not set')
+        value = os.environ.get(var, "Not set")
         print(f"   {var}: {value}")
 
     # 9. Show example tools
     print("9. Example tools:")
     tool_types = {}
     for tool in all_tools:
-        tool_type = tool.get('type', 'Unknown')
+        tool_type = tool.get("type", "Unknown")
         tool_types[tool_type] = tool_types.get(tool_type, 0) + 1
 
     # Show top 5 tool types

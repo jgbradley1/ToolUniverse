@@ -26,21 +26,20 @@ def _execute_opentargets_query(chembl_id):
     """Directly execute OpenTargets GraphQL query (most efficient)"""
     try:
         from tooluniverse.graphql_tool import execute_query
+
         query = _get_drug_names_query()
         variables = {"chemblId": chembl_id}
         return execute_query(
-            endpoint_url=_OPENTARGETS_ENDPOINT,
-            query=query,
-            variables=variables
+            endpoint_url=_OPENTARGETS_ENDPOINT, query=query, variables=variables
         )
     except ImportError:
         # Fallback if graphql_tool not available
         import requests
+
         query = _get_drug_names_query()
         variables = {"chemblId": chembl_id}
         response = requests.post(
-            _OPENTARGETS_ENDPOINT,
-            json={"query": query, "variables": variables}
+            _OPENTARGETS_ENDPOINT, json={"query": query, "variables": variables}
         )
         try:
             result = response.json()
@@ -195,9 +194,9 @@ def search_openfda(
             value = value.replace(" AND ", " ")  # remove 'AND' in the search query
             value = " ".join(value.split())
             if search_keyword_option == "AND":
-                search_query.append(f'{field}:({value.replace(" ", "+AND+")})')
+                search_query.append(f"{field}:({value.replace(' ', '+AND+')})")
             elif search_keyword_option == "OR":
-                search_query.append(f'{field}:({value.replace(" ", "+")})')
+                search_query.append(f"{field}:({value.replace(' ', '+')})")
             else:
                 print("Invalid search_keyword_option. Please use 'AND' or 'OR'.")
         del params["search_fields"]
@@ -343,16 +342,17 @@ class FDADrugLabelTool(FDATool):
                     # Prefer generic name, fallback to name, then trade names
                     name = drug.get("name")
                     if name:
-                        msg = (f"Converted ChEMBL ID {chembl_id} "
-                               f"to drug name: {name}")
+                        msg = f"Converted ChEMBL ID {chembl_id} to drug name: {name}"
                         print(msg)
                         return name
 
                     # Try trade names as fallback
                     trade_names = drug.get("tradeNames", [])
                     if trade_names:
-                        msg = (f"Converted ChEMBL ID {chembl_id} "
-                               f"to trade name: {trade_names[0]}")
+                        msg = (
+                            f"Converted ChEMBL ID {chembl_id} "
+                            f"to trade name: {trade_names[0]}"
+                        )
                         print(msg)
                         return trade_names[0]
 
@@ -365,8 +365,7 @@ class FDADrugLabelTool(FDATool):
             print(msg)
             return None
         except Exception as e:
-            msg = (f"Error converting ChEMBL ID {chembl_id} "
-                   f"to drug name: {e}")
+            msg = f"Error converting ChEMBL ID {chembl_id} to drug name: {e}"
             print(msg)
             return None
 

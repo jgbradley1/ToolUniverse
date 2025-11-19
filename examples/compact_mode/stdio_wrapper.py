@@ -19,31 +19,28 @@ from pathlib import Path
 
 def main():
     """Run SMCP server with compact mode in STDIO mode."""
-    
+
     # Setup environment
     env = os.environ.copy()
     env.setdefault("PYTHONWARNINGS", "ignore")
     env.setdefault("FASTMCP_NO_BANNER", "1")
-    
+
     # Build command with compact mode enabled
     cmd = [
         sys.executable,
-        "-m", "tooluniverse.smcp_server",
-        "--transport", "stdio",
+        "-m",
+        "tooluniverse.smcp_server",
+        "--transport",
+        "stdio",
         "--compact-mode",  # Enable compact mode
     ]
-    
+
     # Run subprocess with filtered output
     # JSON messages go to stdout, logs go to stderr
     p = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=sys.stderr,
-        text=True,
-        bufsize=1,
-        env=env
+        cmd, stdout=subprocess.PIPE, stderr=sys.stderr, text=True, bufsize=1, env=env
     )
-    
+
     # Filter output: JSON goes to stdout, everything else to stderr
     for line in p.stdout:
         if line.lstrip().startswith(("{", "[")):
@@ -54,11 +51,10 @@ def main():
             # Log message - send to stderr
             sys.stderr.write(line)
             sys.stderr.flush()
-    
+
     p.wait()
     sys.exit(p.returncode)
 
 
 if __name__ == "__main__":
     main()
-

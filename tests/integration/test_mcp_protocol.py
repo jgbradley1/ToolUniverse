@@ -38,9 +38,9 @@ class TestMCPProtocol:
             name="Test MCP Server",
             tool_categories=["uniprot", "ChEMBL"],
             max_workers=2,
-            search_enabled=True
+            search_enabled=True,
         )
-        
+
         assert server is not None
         assert server.name == "Test MCP Server"
         assert len(server.tooluniverse.all_tool_dict) > 0
@@ -49,14 +49,12 @@ class TestMCPProtocol:
     def test_smcp_server_tool_loading(self):
         """Test SMCP server loads tools correctly"""
         server = SMCP(
-            name="Test Server",
-            tool_categories=["uniprot"],
-            search_enabled=True
+            name="Test Server", tool_categories=["uniprot"], search_enabled=True
         )
-        
+
         tools = server.tooluniverse.all_tool_dict
         assert len(tools) > 0
-        
+
         # Check that UniProt tools are loaded
         uniprot_tools = [name for name in tools.keys() if "UniProt" in name]
         assert len(uniprot_tools) > 0
@@ -65,14 +63,12 @@ class TestMCPProtocol:
     async def test_mcp_tools_list_request(self):
         """Test MCP tools/list request handling"""
         server = SMCP(
-            name="Test Server",
-            tool_categories=["uniprot"],
-            search_enabled=True
+            name="Test Server", tool_categories=["uniprot"], search_enabled=True
         )
-        
+
         # Test tools/list by calling get_tools directly
         tools = await server.get_tools()
-        
+
         # Verify we get tools (can be dict or list)
         assert isinstance(tools, (list, dict))
         if isinstance(tools, dict):
@@ -83,26 +79,24 @@ class TestMCPProtocol:
         else:
             assert len(tools) > 0
             tool = tools[0]
-        
+
         # Check tool structure
-        assert hasattr(tool, 'name') or 'name' in tool
-        assert hasattr(tool, 'description') or 'description' in tool
+        assert hasattr(tool, "name") or "name" in tool
+        assert hasattr(tool, "description") or "description" in tool
 
     @pytest.mark.asyncio
     async def test_mcp_tools_call_request(self):
         """Test MCP tools/call request handling"""
         server = SMCP(
-            name="Test Server",
-            tool_categories=["uniprot"],
-            search_enabled=True
+            name="Test Server", tool_categories=["uniprot"], search_enabled=True
         )
-        
+
         # Get available tools
         tools = await server.get_tools()
-        
+
         if not tools:
             pytest.skip("No tools available for testing")
-        
+
         # Find a UniProt tool
         uniprot_tool = None
         if isinstance(tools, dict):
@@ -112,18 +106,18 @@ class TestMCPProtocol:
                     break
         else:
             for tool in tools:
-                tool_name = tool.name if hasattr(tool, 'name') else tool.get('name', '')
+                tool_name = tool.name if hasattr(tool, "name") else tool.get("name", "")
                 if "UniProt" in tool_name:
                     uniprot_tool = tool
                     break
-        
+
         if not uniprot_tool:
             pytest.skip("No UniProt tools available for testing")
-        
+
         # Test tool execution (this might fail due to missing API keys, which is expected)
         try:
             # Try to run the tool directly
-            if hasattr(uniprot_tool, 'run'):
+            if hasattr(uniprot_tool, "run"):
                 result = await uniprot_tool.run(accession="P05067")
                 assert result is not None
             else:
@@ -131,7 +125,9 @@ class TestMCPProtocol:
                 pytest.skip("Tool doesn't have run method")
         except Exception as e:
             # Expected to fail due to missing API keys
-            assert "API" in str(e) or "key" in str(e).lower() or "error" in str(e).lower()
+            assert (
+                "API" in str(e) or "key" in str(e).lower() or "error" in str(e).lower()
+            )
 
     @pytest.mark.asyncio
     async def test_mcp_tools_find_request(self):
@@ -139,29 +135,28 @@ class TestMCPProtocol:
         server = SMCP(
             name="Test Server",
             tool_categories=["uniprot", "ChEMBL"],
-            search_enabled=True
+            search_enabled=True,
         )
-        
+
         # Test tools/find by calling the method directly
         try:
-            response = await server._handle_tools_find("find-1", {
-                "query": "protein analysis",
-                "limit": 5,
-                "format": "mcp_standard"
-            })
-            
+            response = await server._handle_tools_find(
+                "find-1",
+                {"query": "protein analysis", "limit": 5, "format": "mcp_standard"},
+            )
+
             # Verify response structure
             assert "result" in response
             assert "tools" in response["result"]
             assert isinstance(response["result"]["tools"], list)
-            
+
             # Check that we got some results
             tools = response["result"]["tools"]
         except Exception as e:
             # If tools/find fails, that's also acceptable in test environment
             pytest.skip(f"tools/find not available: {e}")
         assert len(tools) > 0
-        
+
         # Check tool structure
         tool = tools[0]
         assert "name" in tool
@@ -171,11 +166,9 @@ class TestMCPProtocol:
     async def test_mcp_error_handling(self):
         """Test MCP error handling for invalid requests"""
         server = SMCP(
-            name="Test Server",
-            tool_categories=["uniprot"],
-            search_enabled=True
+            name="Test Server", tool_categories=["uniprot"], search_enabled=True
         )
-        
+
         # Test that invalid method is handled gracefully
         # Since we removed _custom_handle_request, we'll test that the server
         # doesn't crash when given invalid input
@@ -192,39 +185,45 @@ class TestMCPProtocol:
         # Mock the streamablehttp_client and ClientSession
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
-        mock_session.list_tools = AsyncMock(return_value={
-            "tools": [
-                {
-                    "name": "test_tool",
-                    "description": "A test tool",
-                    "inputSchema": {
-                        "type": "object",
-                        "properties": {
-                            "param1": {"type": "string"}
-                        }
+        mock_session.list_tools = AsyncMock(
+            return_value={
+                "tools": [
+                    {
+                        "name": "test_tool",
+                        "description": "A test tool",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {"param1": {"type": "string"}},
+                        },
                     }
-                }
-            ]
-        })
-        
+                ]
+            }
+        )
+
         mock_read_stream = AsyncMock()
         mock_write_stream = AsyncMock()
-        
-        with patch('tooluniverse.mcp_client_tool.streamablehttp_client') as mock_client:
-            mock_client.return_value.__aenter__.return_value = (mock_read_stream, mock_write_stream, None)
-            
-            with patch('tooluniverse.mcp_client_tool.ClientSession') as mock_session_class:
+
+        with patch("tooluniverse.mcp_client_tool.streamablehttp_client") as mock_client:
+            mock_client.return_value.__aenter__.return_value = (
+                mock_read_stream,
+                mock_write_stream,
+                None,
+            )
+
+            with patch(
+                "tooluniverse.mcp_client_tool.ClientSession"
+            ) as mock_session_class:
                 mock_session_class.return_value.__aenter__.return_value = mock_session
-                
+
                 # Create MCP client tool
                 tool_config = {
                     "name": "test_mcp_client",
                     "server_url": "http://localhost:8000",
-                    "transport": "http"
+                    "transport": "http",
                 }
-                
+
                 client_tool = MCPClientTool(tool_config)
-                
+
                 # Test listing tools
                 tools = await client_tool.list_tools()
                 assert len(tools) > 0
@@ -236,33 +235,36 @@ class TestMCPProtocol:
         # Mock the streamablehttp_client and ClientSession
         mock_session = AsyncMock()
         mock_session.initialize = AsyncMock()
-        mock_session.call_tool = AsyncMock(return_value={
-            "content": [
-                {
-                    "type": "text",
-                    "text": "Tool execution result"
-                }
-            ]
-        })
-        
+        mock_session.call_tool = AsyncMock(
+            return_value={
+                "content": [{"type": "text", "text": "Tool execution result"}]
+            }
+        )
+
         mock_read_stream = AsyncMock()
         mock_write_stream = AsyncMock()
-        
-        with patch('tooluniverse.mcp_client_tool.streamablehttp_client') as mock_client:
-            mock_client.return_value.__aenter__.return_value = (mock_read_stream, mock_write_stream, None)
-            
-            with patch('tooluniverse.mcp_client_tool.ClientSession') as mock_session_class:
+
+        with patch("tooluniverse.mcp_client_tool.streamablehttp_client") as mock_client:
+            mock_client.return_value.__aenter__.return_value = (
+                mock_read_stream,
+                mock_write_stream,
+                None,
+            )
+
+            with patch(
+                "tooluniverse.mcp_client_tool.ClientSession"
+            ) as mock_session_class:
                 mock_session_class.return_value.__aenter__.return_value = mock_session
-                
+
                 # Create MCP client tool
                 tool_config = {
                     "name": "test_mcp_client",
                     "server_url": "http://localhost:8000",
-                    "transport": "http"
+                    "transport": "http",
                 }
-                
+
                 client_tool = MCPClientTool(tool_config)
-                
+
                 # Test tool execution
                 result = await client_tool.call_tool("test_tool", {"param1": "value1"})
                 assert "content" in result
@@ -275,9 +277,9 @@ class TestMCPProtocol:
             ["tooluniverse-smcp", "--help"],
             capture_output=True,
             text=True,
-            timeout=60  # Increased timeout to 60 seconds
+            timeout=60,  # Increased timeout to 60 seconds
         )
-        
+
         # Should succeed and show help
         assert result.returncode == 0
         assert "tooluniverse-smcp" in result.stdout
@@ -289,13 +291,16 @@ class TestMCPProtocol:
             ["tooluniverse-smcp", "--list-categories"],
             capture_output=True,
             text=True,
-            timeout=60  # Increased timeout to 60 seconds
+            timeout=60,  # Increased timeout to 60 seconds
         )
-        
+
         # Should succeed and show categories summary (new format)
         assert result.returncode == 0
         assert "Available tool categories" in result.stdout
-        assert "Total categories:" in result.stdout or "Total unique tools:" in result.stdout
+        assert (
+            "Total categories:" in result.stdout
+            or "Total unique tools:" in result.stdout
+        )
 
     def test_mcp_server_list_tools(self):
         """Test MCP server list tools command works"""
@@ -304,9 +309,9 @@ class TestMCPProtocol:
             ["tooluniverse-smcp", "--list-tools"],
             capture_output=True,
             text=True,
-            timeout=60  # Increased timeout to 60 seconds
+            timeout=60,  # Increased timeout to 60 seconds
         )
-        
+
         # Should succeed and show tools (or at least not crash)
         # Note: This might fail due to missing API keys, which is expected in test environment
         if result.returncode == 0:
@@ -321,16 +326,16 @@ class TestMCPProtocol:
         server = SMCP(
             name="Protocol Test Server",
             tool_categories=["uniprot"],
-            search_enabled=True
+            search_enabled=True,
         )
-        
+
         # Test tools/list by calling get_tools directly
         tools = await server.get_tools()
-        
+
         # Verify we get tools (can be dict or list)
         assert isinstance(tools, (list, dict))
         assert len(tools) > 0
-        
+
         # Verify tool structure
         if isinstance(tools, dict):
             # If tools is a dict, get the first tool
@@ -339,10 +344,10 @@ class TestMCPProtocol:
         else:
             # If tools is a list, get the first tool
             tool = tools[0]
-        
+
         # Verify tool has required attributes
-        assert hasattr(tool, 'name') or 'name' in tool
-        assert hasattr(tool, 'description') or 'description' in tool
+        assert hasattr(tool, "name") or "name" in tool
+        assert hasattr(tool, "description") or "description" in tool
 
     @pytest.mark.asyncio
     async def test_mcp_concurrent_requests(self):
@@ -351,9 +356,9 @@ class TestMCPProtocol:
             name="Concurrent Test Server",
             tool_categories=["uniprot"],
             search_enabled=True,
-            max_workers=3
+            max_workers=3,
         )
-        
+
         # Create multiple concurrent requests
         requests = []
         for i in range(5):
@@ -361,14 +366,14 @@ class TestMCPProtocol:
                 "jsonrpc": "2.0",
                 "id": f"concurrent-{i}",
                 "method": "tools/list",
-                "params": {}
+                "params": {},
             }
             requests.append(request)
-        
+
         # Execute all requests concurrently by calling get_tools multiple times
         tasks = [server.get_tools() for _ in range(5)]
         responses = await asyncio.gather(*tasks)
-        
+
         # All requests should succeed
         assert len(responses) == 5
         for tools in responses:
@@ -382,15 +387,15 @@ class TestMCPProtocol:
             name="Valid Server",
             tool_categories=["uniprot", "ChEMBL"],
             max_workers=5,
-            search_enabled=True
+            search_enabled=True,
         )
         assert server is not None
-        
+
         # Test invalid configuration (should still work with defaults)
         server = SMCP(
             name="Invalid Server",
             tool_categories=["nonexistent_category"],
-            max_workers=1  # Use valid value
+            max_workers=1,  # Use valid value
         )
         assert server is not None
         assert server.max_workers >= 1  # Should use provided value

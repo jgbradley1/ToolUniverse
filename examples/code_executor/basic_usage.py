@@ -26,13 +26,12 @@ def basic_code_execution():
     tu.load_tools()
 
     # Simple arithmetic
-    result = tu.run({
-        "name": "python_code_executor",
-        "arguments": {
-            "code": "result = 2 + 2 * 3",
-            "timeout": 10
+    result = tu.run(
+        {
+            "name": "python_code_executor",
+            "arguments": {"code": "result = 2 + 2 * 3", "timeout": 10},
         }
-    })
+    )
 
     print("Code: result = 2 + 2 * 3")
     print(f"Result: {result['result']}")
@@ -50,14 +49,16 @@ def variable_passing():
     tu.load_tools()
 
     # Use passed variables
-    result = tu.run({
-        "name": "python_code_executor",
-        "arguments": {
-            "code": "result = x ** 2 + y ** 2",
-            "arguments": {"x": 3, "y": 4},
-            "timeout": 10
+    result = tu.run(
+        {
+            "name": "python_code_executor",
+            "arguments": {
+                "code": "result = x ** 2 + y ** 2",
+                "arguments": {"x": 3, "y": 4},
+                "timeout": 10,
+            },
         }
-    })
+    )
 
     print("Code: result = x ** 2 + y ** 2")
     print("Variables: x=3, y=4")
@@ -75,10 +76,11 @@ def math_module_usage():
     tu.load_tools()
 
     # Use math module
-    result = tu.run({
-        "name": "python_code_executor",
-        "arguments": {
-            "code": """
+    result = tu.run(
+        {
+            "name": "python_code_executor",
+            "arguments": {
+                "code": """
 import math
 result = {
     'sqrt_16': math.sqrt(16),
@@ -87,9 +89,10 @@ result = {
     'log_e': math.log(math.e)
 }
 """,
-            "timeout": 10
+                "timeout": 10,
+            },
         }
-    })
+    )
 
     print("Code: Using math module for various calculations")
     print(f"Result: {result['result']}")
@@ -106,10 +109,11 @@ def json_processing():
     tu.load_tools()
 
     # JSON data processing
-    result = tu.run({
-        "name": "python_code_executor",
-        "arguments": {
-            "code": """
+    result = tu.run(
+        {
+            "name": "python_code_executor",
+            "arguments": {
+                "code": """
 import json
 from datetime import datetime
 
@@ -122,9 +126,10 @@ data = {
 
 result = json.dumps(data, ensure_ascii=False, indent=2)
 """,
-            "timeout": 10
+                "timeout": 10,
+            },
         }
-    })
+    )
 
     print("Code: JSON data processing")
     print(f"Result:\n{result['result']}")
@@ -141,10 +146,11 @@ def list_comprehension():
     tu.load_tools()
 
     # Complex data processing
-    result = tu.run({
-        "name": "python_code_executor",
-        "arguments": {
-            "code": """
+    result = tu.run(
+        {
+            "name": "python_code_executor",
+            "arguments": {
+                "code": """
 numbers = list(range(1, 21))
 even_squares = [x**2 for x in numbers if x % 2 == 0]
 odd_cubes = [x**3 for x in numbers if x % 2 == 1]
@@ -158,9 +164,10 @@ result = {
     'odd_sum': sum(odd_cubes)
 }
 """,
-            "timeout": 10
+                "timeout": 10,
+            },
         }
-    })
+    )
 
     print("Code: List comprehension and data processing")
     print(f"Result: {result['result']}")
@@ -177,13 +184,12 @@ def security_test():
     tu.load_tools()
 
     # Try to execute forbidden operations
-    result = tu.run({
-        "name": "python_code_executor",
-        "arguments": {
-            "code": "import os\nresult = os.listdir('.')",
-            "timeout": 10
+    result = tu.run(
+        {
+            "name": "python_code_executor",
+            "arguments": {"code": "import os\nresult = os.listdir('.')", "timeout": 10},
         }
-    })
+    )
 
     print("Code: import os (forbidden operation)")
     print(f"Success: {result['success']}")
@@ -225,15 +231,16 @@ print(f"Data: {json.dumps(data, indent=2)}")
         tu.load_tools()
 
         # Run script
-        result = tu.run({
-            "name": "python_script_runner",
-            "arguments": {
-                "script_path": str(test_script),
-                "script_args": ["--input", "data.csv",
-                                "--output", "result.csv"],
-                "timeout": 30
+        result = tu.run(
+            {
+                "name": "python_script_runner",
+                "arguments": {
+                    "script_path": str(test_script),
+                    "script_args": ["--input", "data.csv", "--output", "result.csv"],
+                    "timeout": 30,
+                },
             }
-        })
+        )
 
         print(f"Script path: {test_script}")
         print(f"Success: {result['success']}")
@@ -267,9 +274,9 @@ def main():
     except Exception as e:
         print(f"\nError occurred during execution: {e}")
         import traceback
+
         traceback.print_exc()
 
 
 if __name__ == "__main__":
     main()
-

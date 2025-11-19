@@ -49,7 +49,7 @@ test_queries = [
 for idx, query in enumerate(test_queries):
     name = query["name"]
     args = query["arguments"]
-    print(f"\n[{idx+1}] Running tool: {name} with arguments: {args}")
+    print(f"\n[{idx + 1}] Running tool: {name} with arguments: {args}")
     try:
         result = tooluni.run(query)
         # Print brief results: if dict, print first few lines; otherwise print first 500 chars

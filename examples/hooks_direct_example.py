@@ -3,6 +3,7 @@
 简化的 MCP stdio 模式 hooks 测试
 直接测试工具调用功能
 """
+
 import subprocess
 import sys
 import signal
@@ -11,10 +12,10 @@ import time
 
 def test_tool_call_directly(hooks_enabled=False, timeout=30):
     """直接测试工具调用"""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"测试模式: {'开启 hooks' if hooks_enabled else '关闭 hooks'}")
     print(f"超时设置: {timeout}秒")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # 构建命令
     cmd = [
@@ -161,9 +162,9 @@ def main():
     result_with_hooks = test_tool_call_directly(hooks_enabled=True, timeout=20)
 
     # 对比结果
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("测试结果对比")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     print("关闭 hooks:")
     if result_no_hooks["success"]:

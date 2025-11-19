@@ -37,95 +37,117 @@ VALID_XREF_TYPES = ["RegistryID", "RN"]
 # =============================================================================
 # Description: Retrieve molecular properties using compound ID
 # Syntax: tu.run({"name": "PubChem_get_compound_properties_by_CID", "arguments": {"cid": 1983}})
-result1 = tu.run({"name": "PubChem_get_compound_properties_by_CID", "arguments": {"cid": VALID_CID}})
+result1 = tu.run(
+    {"name": "PubChem_get_compound_properties_by_CID", "arguments": {"cid": VALID_CID}}
+)
 
 # =============================================================================
 # Method 2: Associated Patents
 # =============================================================================
 # Description: Get patents associated with a compound
 # Syntax: tu.run({"name": "PubChem_get_associated_patents_by_CID", "arguments": {"cid": 1983}})
-result2 = tu.run({"name": "PubChem_get_associated_patents_by_CID", "arguments": {"cid": VALID_CID}})
+result2 = tu.run(
+    {"name": "PubChem_get_associated_patents_by_CID", "arguments": {"cid": VALID_CID}}
+)
 
 # =============================================================================
 # Method 3: Webpage Title Extraction
 # =============================================================================
 # Description: Extract title from PubChem patent webpage
 # Syntax: tu.run({"name": "get_webpage_title", "arguments": {"url": "https://pubchem.ncbi.nlm.nih.gov/patent/US6015577"}})
-result3 = tu.run({
-    "name": "get_webpage_title",
-    "arguments": {"url": "https://pubchem.ncbi.nlm.nih.gov/patent/US6015577"}
-})
+result3 = tu.run(
+    {
+        "name": "get_webpage_title",
+        "arguments": {"url": "https://pubchem.ncbi.nlm.nih.gov/patent/US6015577"},
+    }
+)
 
 # =============================================================================
 # Method 4: CID Lookup by Name
 # =============================================================================
 # Description: Find compound ID using compound name
 # Syntax: tu.run({"name": "PubChem_get_CID_by_compound_name", "arguments": {"name": "Aspirin"}})
-result4 = tu.run({"name": "PubChem_get_CID_by_compound_name", "arguments": {"name": VALID_NAME}})
+result4 = tu.run(
+    {"name": "PubChem_get_CID_by_compound_name", "arguments": {"name": VALID_NAME}}
+)
 
 # =============================================================================
 # Method 5: CID Lookup by SMILES
 # =============================================================================
 # Description: Find compound ID using SMILES notation
 # Syntax: tu.run({"name": "PubChem_get_CID_by_SMILES", "arguments": {"smiles": "C1=NC2=C(N1)C(=O)N=C(N2)N"}})
-result5 = tu.run({"name": "PubChem_get_CID_by_SMILES", "arguments": {"smiles": VALID_SMILES}})
+result5 = tu.run(
+    {"name": "PubChem_get_CID_by_SMILES", "arguments": {"smiles": VALID_SMILES}}
+)
 
 # =============================================================================
 # Method 6: Substructure Search
 # =============================================================================
 # Description: Search for compounds containing specific substructures
 # Syntax: tu.run({"name": "PubChem_search_compounds_by_substructure", "arguments": {"smiles": "c1ccccc1"}})
-result6 = tu.run({
-    "name": "PubChem_search_compounds_by_substructure",
-    "arguments": {"smiles": VALID_SUBSTRUCTURE}
-})
+result6 = tu.run(
+    {
+        "name": "PubChem_search_compounds_by_substructure",
+        "arguments": {"smiles": VALID_SUBSTRUCTURE},
+    }
+)
 
 # =============================================================================
 # Method 7: Similarity Search
 # =============================================================================
 # Description: Find compounds similar to a reference structure
 # Syntax: tu.run({"name": "PubChem_search_compounds_by_similarity", "arguments": {"smiles": "C1=NC2=C(N1)C(=O)N=C(N2)N", "threshold": 0.95}})
-result7 = tu.run({
-    "name": "PubChem_search_compounds_by_similarity",
-    "arguments": {"smiles": VALID_SMILES, "threshold": VALID_THRESHOLD}
-})
+result7 = tu.run(
+    {
+        "name": "PubChem_search_compounds_by_similarity",
+        "arguments": {"smiles": VALID_SMILES, "threshold": VALID_THRESHOLD},
+    }
+)
 
 # =============================================================================
 # Method 8: 2D Structure Image
 # =============================================================================
 # Description: Retrieve 2D molecular structure image
 # Syntax: tu.run({"name": "PubChem_get_compound_2D_image_by_CID", "arguments": {"cid": 1983, "image_size": "150x150"}})
-result8 = tu.run({
-    "name": "PubChem_get_compound_2D_image_by_CID",
-    "arguments": {"cid": VALID_CID, "image_size": "150x150"}
-})
+result8 = tu.run(
+    {
+        "name": "PubChem_get_compound_2D_image_by_CID",
+        "arguments": {"cid": VALID_CID, "image_size": "150x150"},
+    }
+)
 
 # =============================================================================
 # Method 9: Compound Synonyms
 # =============================================================================
 # Description: Get alternative names and synonyms for a compound
 # Syntax: tu.run({"name": "PubChem_get_compound_synonyms_by_CID", "arguments": {"cid": 1983}})
-result9 = tu.run({"name": "PubChem_get_compound_synonyms_by_CID", "arguments": {"cid": VALID_CID}})
+result9 = tu.run(
+    {"name": "PubChem_get_compound_synonyms_by_CID", "arguments": {"cid": VALID_CID}}
+)
 
 # =============================================================================
 # Method 10: External References
 # =============================================================================
 # Description: Get cross-references to external databases
 # Syntax: tu.run({"name": "PubChem_get_compound_xrefs_by_CID", "arguments": {"cid": 1983, "xref_types": ["RegistryID", "RN"]}})
-result10 = tu.run({
-    "name": "PubChem_get_compound_xrefs_by_CID",
-    "arguments": {"cid": VALID_CID, "xref_types": VALID_XREF_TYPES}
-})
+result10 = tu.run(
+    {
+        "name": "PubChem_get_compound_xrefs_by_CID",
+        "arguments": {"cid": VALID_CID, "xref_types": VALID_XREF_TYPES},
+    }
+)
 
 # =============================================================================
 # Method 11: Error Handling Example
 # =============================================================================
 # Description: Demonstrate error handling with invalid compound ID
 # Syntax: tu.run({"name": "PubChem_get_compound_properties_by_CID", "arguments": {"cid": -1}})
-result11 = tu.run({
-    "name": "PubChem_get_compound_properties_by_CID",
-    "arguments": {"cid": INVALID_CID}
-})
+result11 = tu.run(
+    {
+        "name": "PubChem_get_compound_properties_by_CID",
+        "arguments": {"cid": INVALID_CID},
+    }
+)
 
 # =============================================================================
 # Result Processing Examples
@@ -172,14 +194,14 @@ if isinstance(result8, (bytes, bytearray)):
 # - 2D structure visualization
 # - Synonym and nomenclature data
 # - Cross-references to external databases
-# 
+#
 # Common patterns:
 # - Use CID for most compound-specific queries
 # - Use SMILES for structure-based searches
 # - Use compound names for text-based lookups
 # - Check for "error" key in dictionary responses
 # - Handle different result types (dict, list, str, bytes)
-# 
+#
 # Error handling:
 # - Invalid CIDs return error responses
 # - Network timeouts may occur for large searches

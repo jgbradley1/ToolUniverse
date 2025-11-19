@@ -5,8 +5,9 @@ Simple Test for Human Expert System
 
 import os
 import json
+
 # Set environment variable for MCP server URL
-os.environ['EXPERT_FEEDBACK_MCP_SERVER_URL'] = 'localhost:9876'
+os.environ["EXPERT_FEEDBACK_MCP_SERVER_URL"] = "localhost:9876"
 
 from tooluniverse import ToolUniverse
 
@@ -27,13 +28,13 @@ result = tooluni.run(
 )
 
 print(result)
-print(result['content'][0])
+print(result["content"][0])
 # print the result
 print("=" * 60)
 print("EXPERT CONSULTATION RESULT")
 print("=" * 60)
 
-data = json.loads(result['content'][0]['text'])
+data = json.loads(result["content"][0]["text"])
 
 # Display basic info
 print(f"Request ID: {data.get('request_id', 'N/A')}")
@@ -48,7 +49,7 @@ print("EXPERT ADVICE:")
 print("=" * 60)
 
 # Display expert response
-expert_response = data.get('expert_response', 'No response available')
+expert_response = data.get("expert_response", "No response available")
 print(expert_response)
 
 print("\n" + "=" * 60)

@@ -89,7 +89,9 @@ def main():
     call_counter = Counter()
 
     total_calls = args.iterations
-    print(f"Running {total_calls} iterations against Tool_Finder_Keyword (use_cache=True)")
+    print(
+        f"Running {total_calls} iterations against Tool_Finder_Keyword (use_cache=True)"
+    )
 
     for i in range(1, total_calls + 1):
         query = random.choice(QUERY_POOL)
@@ -129,7 +131,9 @@ def main():
     print(f"Total calls issued      : {total_calls}")
     print(f"Unique argument combos  : {unique_requests}")
     print(f"Cache hits (est.)       : {cache_hits} ({cache_hits / total_calls:.1%})")
-    print(f"Cache misses (est.)     : {unique_requests} ({unique_requests / total_calls:.1%})")
+    print(
+        f"Cache misses (est.)     : {unique_requests} ({unique_requests / total_calls:.1%})"
+    )
 
     if first_call_times:
         print(

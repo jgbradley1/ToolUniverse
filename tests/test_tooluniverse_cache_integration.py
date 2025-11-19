@@ -51,6 +51,7 @@ def _call(engine: ToolUniverse, value: int):
         use_cache=True,
     )
 
+
 def _with_env(**overrides):
     env_vars = {
         "TOOLUNIVERSE_CACHE_ENABLED": "true",
@@ -61,6 +62,7 @@ def _with_env(**overrides):
     old_env = {k: os.environ.get(k) for k in env_vars}
     os.environ.update(env_vars)
     return env_vars, old_env
+
 
 def _restore_env(old_env):
     for key, value in old_env.items():

@@ -95,7 +95,7 @@ def format_value(value, max_items=10, max_length=5000):
                     item_str = str(item)
                     if len(item_str) > max_length:
                         item_str = item_str[:max_length] + "..."
-                    result += f"  [{i+1}] {item_str}\n"
+                    result += f"  [{i + 1}] {item_str}\n"
 
                 if len(value["data"]) > max_items:
                     result += f"  ... and {len(value['data']) - max_items} more items\n"
@@ -128,7 +128,7 @@ def format_value(value, max_items=10, max_length=5000):
 # Step 3: Run all test queries
 for idx, query in enumerate(test_queries, 1):
     print(
-        f"\n{'='*80}\n[{idx}] Running tool: {query['name']} with arguments: {query['arguments']}"
+        f"\n{'=' * 80}\n[{idx}] Running tool: {query['name']} with arguments: {query['arguments']}"
     )
     try:
         result = tooluni.run(query)

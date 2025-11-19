@@ -33,9 +33,13 @@ async def use_compact_mode():
     print("\n1. Creating MCP client connection...")
     server = StdioServerParameters(
         command=sys.executable,
-        args=["-m", "tooluniverse.smcp_server",
-              "--transport", "stdio",
-              "--compact-mode"]
+        args=[
+            "-m",
+            "tooluniverse.smcp_server",
+            "--transport",
+            "stdio",
+            "--compact-mode",
+        ],
     )
 
     async with stdio_client(server) as (read, write):
@@ -55,7 +59,7 @@ async def use_compact_mode():
             print("\n3. Getting tool overview with list_tools...")
             result = await session.call_tool("list_tools", {"mode": "names"})
             tools_data = json.loads(result.content[0].text)
-            all_tools = tools_data.get('tools', [])
+            all_tools = tools_data.get("tools", [])
             print(f"   ✅ Found {len(all_tools)} total tools available")
             if all_tools:
                 # For mode="names", tools is a list of strings
@@ -63,30 +67,33 @@ async def use_compact_mode():
                 if isinstance(first_tool, str):
                     tool_name = first_tool
                 else:
-                    tool_name = first_tool.get('name', '')
+                    tool_name = first_tool.get("name", "")
                 print(f"   Example: {tool_name}")
 
             # Step 3: Search for tools with grep_tools
             print("\n4. Searching for tools with grep_tools...")
             try:
-                result = await session.call_tool("grep_tools", {
-                    "pattern": "protein",
-                    "field": "name",
-                    "search_mode": "text",
-                    "limit": 5
-                })
+                result = await session.call_tool(
+                    "grep_tools",
+                    {
+                        "pattern": "protein",
+                        "field": "name",
+                        "search_mode": "text",
+                        "limit": 5,
+                    },
+                )
                 if result.content and len(result.content) > 0:
                     grep_data = json.loads(result.content[0].text)
                     if "error" in grep_data:
                         print(f"   ⚠️  Error: {grep_data['error']}")
                     else:
-                        grep_tools = grep_data.get('tools', [])
+                        grep_tools = grep_data.get("tools", [])
                         count = len(grep_tools)
                         msg = f"   ✅ Found {count} tools matching 'protein'"
                         print(msg)
                         for tool in grep_tools[:3]:
-                            name = tool.get('name')
-                            desc = tool.get('description', '')[:60]
+                            name = tool.get("name")
+                            desc = tool.get("description", "")[:60]
                             print(f"   - {name}: {desc}...")
                 else:
                     print("   ⚠️  No result returned")
@@ -95,27 +102,26 @@ async def use_compact_mode():
 
             # Step 4: Get tool information
             print("\n5. Getting tool information...")
-            result = await session.call_tool("get_tool_info", {
-                "tool_names": "list_tools",
-                "detail_level": "description"
-            })
+            result = await session.call_tool(
+                "get_tool_info",
+                {"tool_names": "list_tools", "detail_level": "description"},
+            )
             tool_info = json.loads(result.content[0].text)
             if isinstance(tool_info, list):
                 tool_info = tool_info[0]
             print(f"   ✅ Retrieved info for: {tool_info.get('name')}")
-            desc = tool_info.get('description', '')[:80]
+            desc = tool_info.get("description", "")[:80]
             print(f"   Description: {desc}...")
 
             # Step 5: Execute a tool via execute_tool
             print("\n6. Executing tool via execute_tool...")
-            result = await session.call_tool("execute_tool", {
-                "tool_name": "list_tools",
-                "arguments": {"mode": "categories"}
-            })
+            result = await session.call_tool(
+                "execute_tool",
+                {"tool_name": "list_tools", "arguments": {"mode": "categories"}},
+            )
             categories = json.loads(result.content[0].text)
-            category_count = len(categories.get('categories', {}))
-            msg = (f"   ✅ Executed successfully, "
-                   f"found {category_count} categories")
+            category_count = len(categories.get("categories", {}))
+            msg = f"   ✅ Executed successfully, found {category_count} categories"
             print(msg)
 
             print("\n" + "=" * 60)
@@ -124,14 +130,16 @@ async def use_compact_mode():
             print("\nCompact mode exposes 4 core tools:")
             print("  - list_tools: List available tools with different modes")
             print("  - grep_tools: Search tools by text/regex pattern")
-            msg = ("  - get_tool_info: Get tool information "
-                   "(description or full definition)")
+            msg = (
+                "  - get_tool_info: Get tool information "
+                "(description or full definition)"
+            )
             print(msg)
             print("  - execute_tool: Execute any ToolUniverse tool by name")
-            print("\nNote: In Claude Desktop, the client is automatically "
-                  "created.")
-            print("You just need to configure the server and use it through "
-                  "conversation.")
+            print("\nNote: In Claude Desktop, the client is automatically created.")
+            print(
+                "You just need to configure the server and use it through conversation."
+            )
 
 
 if __name__ == "__main__":
@@ -142,4 +150,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ Error: {e}")
         import traceback
+
         traceback.print_exc()

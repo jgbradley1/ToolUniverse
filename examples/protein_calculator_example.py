@@ -25,22 +25,27 @@ from tooluniverse.base_tool import BaseTool
 from typing import Dict, Any
 
 
-@register_tool('ProteinCalculator', config={
-    "name": "protein_calculator",
-    "type": "ProteinCalculator",
-    "description": "Calculate molecular weight of protein sequences",
-    "parameter": {
-        "type": "object",
-        "properties": {
-            "sequence": {
-                "type": "string",
-                "description": ("Protein sequence using single-letter amino acid "
-                              "codes (e.g., 'GIVEQCCTSICSLYQLENYCN')")
-            }
+@register_tool(
+    "ProteinCalculator",
+    config={
+        "name": "protein_calculator",
+        "type": "ProteinCalculator",
+        "description": "Calculate molecular weight of protein sequences",
+        "parameter": {
+            "type": "object",
+            "properties": {
+                "sequence": {
+                    "type": "string",
+                    "description": (
+                        "Protein sequence using single-letter amino acid "
+                        "codes (e.g., 'GIVEQCCTSICSLYQLENYCN')"
+                    ),
+                }
+            },
+            "required": ["sequence"],
         },
-        "required": ["sequence"]
-    }
-})
+    },
+)
 class ProteinCalculator(BaseTool):
     """
     Calculate molecular weight of protein sequences.
@@ -57,26 +62,26 @@ class ProteinCalculator(BaseTool):
         # Source: https://www.thermofisher.com/us/en/home/references/
         # molecular-weights-and-conversion-tables.html
         self.aa_weights = {
-            'A': 89.09,   # Alanine
-            'R': 174.20,  # Arginine
-            'N': 132.12,  # Asparagine
-            'D': 133.10,  # Aspartic acid
-            'C': 121.16,  # Cysteine
-            'Q': 146.15,  # Glutamine
-            'E': 147.13,  # Glutamic acid
-            'G': 75.07,   # Glycine
-            'H': 155.16,  # Histidine
-            'I': 131.17,  # Isoleucine
-            'L': 131.17,  # Leucine
-            'K': 146.19,  # Lysine
-            'M': 149.21,  # Methionine
-            'F': 165.19,  # Phenylalanine
-            'P': 115.13,  # Proline
-            'S': 105.09,  # Serine
-            'T': 119.12,  # Threonine
-            'W': 204.23,  # Tryptophan
-            'Y': 181.19,  # Tyrosine
-            'V': 117.15   # Valine
+            "A": 89.09,  # Alanine
+            "R": 174.20,  # Arginine
+            "N": 132.12,  # Asparagine
+            "D": 133.10,  # Aspartic acid
+            "C": 121.16,  # Cysteine
+            "Q": 146.15,  # Glutamine
+            "E": 147.13,  # Glutamic acid
+            "G": 75.07,  # Glycine
+            "H": 155.16,  # Histidine
+            "I": 131.17,  # Isoleucine
+            "L": 131.17,  # Leucine
+            "K": 146.19,  # Lysine
+            "M": 149.21,  # Methionine
+            "F": 165.19,  # Phenylalanine
+            "P": 115.13,  # Proline
+            "S": 105.09,  # Serine
+            "T": 119.12,  # Threonine
+            "W": 204.23,  # Tryptophan
+            "Y": 181.19,  # Tyrosine
+            "V": 117.15,  # Valine
         }
 
     def run(self, arguments=None, **kwargs) -> Dict[str, Any]:
@@ -93,10 +98,12 @@ class ProteinCalculator(BaseTool):
         # Handle both direct calls and ToolUniverse calls
         if arguments is None:
             arguments = kwargs
-        
+
         # Extract sequence from arguments
-        sequence = arguments.get('sequence') if isinstance(arguments, dict) else arguments
-        
+        sequence = (
+            arguments.get("sequence") if isinstance(arguments, dict) else arguments
+        )
+
         # Validate inputs
         self.validate_input(sequence=sequence)
 
@@ -116,7 +123,7 @@ class ProteinCalculator(BaseTool):
             "sequence_length": len(clean_sequence),
             "sequence": clean_sequence,
             "amino_acids": list(clean_sequence),
-            "success": True
+            "success": True,
         }
 
     def validate_input(self, **kwargs) -> None:
@@ -126,7 +133,7 @@ class ProteinCalculator(BaseTool):
         Raises:
             ValueError: If sequence is invalid
         """
-        sequence = kwargs.get('sequence')
+        sequence = kwargs.get("sequence")
 
         if not sequence:
             raise ValueError("Sequence is required")
@@ -141,9 +148,11 @@ class ProteinCalculator(BaseTool):
         valid_aa = set(self.aa_weights.keys())
         invalid_chars = set(sequence.upper()) - valid_aa
         if invalid_chars:
-            valid_codes = ', '.join(sorted(valid_aa))
-            raise ValueError(f"Invalid amino acid codes: {', '.join(invalid_chars)}. "
-                           f"Valid codes are: {valid_codes}")
+            valid_codes = ", ".join(sorted(valid_aa))
+            raise ValueError(
+                f"Invalid amino acid codes: {', '.join(invalid_chars)}. "
+                f"Valid codes are: {valid_codes}"
+            )
 
 
 def demonstrate_usage():
@@ -165,9 +174,9 @@ def demonstrate_usage():
     # Test sequences
     test_sequences = [
         "GIVEQCCTSICSLYQLENYCN",  # 20 amino acids
-        "MKWVTFISLLFLFSSAYS",     # 18 amino acids
-        "A",                      # Single amino acid
-        "ACDEFGHIKLMNPQRSTVWY"    # All 20 standard amino acids
+        "MKWVTFISLLFLFSSAYS",  # 18 amino acids
+        "A",  # Single amino acid
+        "ACDEFGHIKLMNPQRSTVWY",  # All 20 standard amino acids
     ]
 
     print("Testing protein sequences:\n")
@@ -176,10 +185,9 @@ def demonstrate_usage():
         print(f"{i}. Sequence: {seq}")
 
         try:
-            result = tu.run_one_function({
-                "name": "protein_calculator",
-                "arguments": {"sequence": seq}
-            })
+            result = tu.run_one_function(
+                {"name": "protein_calculator", "arguments": {"sequence": seq}}
+            )
 
             if result.get("success"):
                 print(f"   Molecular Weight: {result['molecular_weight']} Da")
@@ -211,7 +219,7 @@ def test_validation():
         (123, "Non-string input"),
         ("ABCXYZ", "Invalid amino acid codes"),
         ("   ", "Whitespace only"),
-        ("GIVEQCCTSICSLYQLENYCN", "Valid sequence")
+        ("GIVEQCCTSICSLYQLENYCN", "Valid sequence"),
     ]
 
     for test_input, description in test_cases:

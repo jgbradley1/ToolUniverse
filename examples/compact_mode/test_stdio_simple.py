@@ -18,10 +18,7 @@ def test_tool(server_process, tool_name, arguments):
         "jsonrpc": "2.0",
         "id": 1,
         "method": "tools/call",
-        "params": {
-            "name": tool_name,
-            "arguments": arguments
-        }
+        "params": {"name": tool_name, "arguments": arguments},
     }
 
     # Send request
@@ -72,7 +69,7 @@ def main():
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
-        bufsize=0
+        bufsize=0,
     )
 
     # Wait for server to start
@@ -86,8 +83,8 @@ def main():
         "params": {
             "protocolVersion": "2024-11-05",
             "capabilities": {},
-            "clientInfo": {"name": "test", "version": "1.0"}
-        }
+            "clientInfo": {"name": "test", "version": "1.0"},
+        },
     }
     server.stdin.write(json.dumps(init_request) + "\n")
     server.stdin.flush()
@@ -99,7 +96,7 @@ def main():
     notification = {
         "jsonrpc": "2.0",
         "method": "notifications/initialized",
-        "params": {}
+        "params": {},
     }
     server.stdin.write(json.dumps(notification) + "\n")
     server.stdin.flush()
@@ -111,26 +108,15 @@ def main():
     tests = [
         # 1. Test list_tools
         ("list_tools", {"mode": "names"}),
-
         # 2. Test grep_tools
-        ("grep_tools", {
-            "pattern": "protein",
-            "field": "name",
-            "search_mode": "text",
-            "limit": 5
-        }),
-
+        (
+            "grep_tools",
+            {"pattern": "protein", "field": "name", "search_mode": "text", "limit": 5},
+        ),
         # 3. Test get_tool_info
-        ("get_tool_info", {
-            "tool_names": "list_tools",
-            "detail_level": "description"
-        }),
-
+        ("get_tool_info", {"tool_names": "list_tools", "detail_level": "description"}),
         # 4. Test execute_tool - execute list_tools
-        ("execute_tool", {
-            "tool_name": "list_tools",
-            "arguments": {"mode": "names"}
-        }),
+        ("execute_tool", {"tool_name": "list_tools", "arguments": {"mode": "names"}}),
     ]
 
     success_count = 0
@@ -142,9 +128,9 @@ def main():
             success_count += 1
         time.sleep(0.5)
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"Test results: {success_count}/{total_count} successful")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
 
     # Cleanup
     server.terminate()

@@ -217,11 +217,9 @@ def example_term_hierarchy():
 
     print("  result = tu.run({")
     print('      "name": "ols_get_term_children",')
-    print("      \"arguments\": {")
+    print('      "arguments": {')
     print('          "operation": "get_term_children",')
-    print(
-        '          "term_iri": "http://www.ebi.ac.uk/efo/EFO_0000408",'
-    )
+    print('          "term_iri": "http://www.ebi.ac.uk/efo/EFO_0000408",')
     print('          "ontology": "efo",')
     print('          "size": 20')
     print("      }")

@@ -47,9 +47,9 @@ def biomarker_discovery_workflow(candidate_genes: list, cancer_type: str):
         # Search for gene information
         gene_search = HPA_search_genes_by_query(search_query=gene)
 
-        if gene_search and 'genes' in gene_search:
-            gene_info = gene_search['genes'][0]
-            ensembl_id = gene_info['ensembl_id']
+        if gene_search and "genes" in gene_search:
+            gene_info = gene_search["genes"][0]
+            ensembl_id = gene_info["ensembl_id"]
             gene_data[gene] = ensembl_id
             results["genes"].append({"symbol": gene, "ensembl_id": ensembl_id})
             print(f"     Ensembl ID: {ensembl_id}")
@@ -65,10 +65,10 @@ def biomarker_discovery_workflow(candidate_genes: list, cancer_type: str):
         gene_list = list(gene_data.values())[:5]  # Use first 5 genes
         ppi_analysis = humanbase_ppi_analysis(
             gene_list=gene_list,
-            tissue=cancer_type.lower().replace(' ', '_'),
+            tissue=cancer_type.lower().replace(" ", "_"),
             max_node=10,
             interaction="co-expression",
-            string_mode=True
+            string_mode=True,
         )
 
         if ppi_analysis:
@@ -89,12 +89,11 @@ def biomarker_discovery_workflow(candidate_genes: list, cancer_type: str):
             "Reactome_Pathways_2024",
             "MSigDB_Hallmark_2020",
             "GO_Molecular_Function_2023",
-            "GO_Biological_Process_2023"
+            "GO_Biological_Process_2023",
         ]
 
         pathway_analysis = enrichr_gene_enrichment_analysis(
-            gene_list=gene_symbols,
-            libs=enrichment_libs
+            gene_list=gene_symbols, libs=enrichment_libs
         )
 
         if pathway_analysis:
@@ -114,8 +113,7 @@ def biomarker_discovery_workflow(candidate_genes: list, cancer_type: str):
     # Step 4: Literature search
     print("\n4. Searching biomarker literature...")
     biomarker_papers = EuropePMC_search_articles(
-        query=f"{cancer_type} biomarker gene expression",
-        limit=10
+        query=f"{cancer_type} biomarker gene expression", limit=10
     )
 
     if biomarker_papers:
@@ -125,12 +123,10 @@ def biomarker_discovery_workflow(candidate_genes: list, cancer_type: str):
     # Step 5: Clinical trial search
     print("\n5. Searching clinical trials...")
     trials = search_clinical_trials(
-        query_term=f"{cancer_type} biomarker",
-        condition=cancer_type,
-        pageSize=5
+        query_term=f"{cancer_type} biomarker", condition=cancer_type, pageSize=5
     )
 
-    if trials and 'results' in trials:
+    if trials and "results" in trials:
         print(f"   Found {len(trials['results'])} clinical trials")
 
     # Step 6: Biomarker ranking
@@ -143,7 +139,7 @@ def biomarker_discovery_workflow(candidate_genes: list, cancer_type: str):
             for t in terms:
                 genes_field = t.get("genes") or t.get("overlap_genes") or []
                 if isinstance(genes_field, str):
-                    genes_list = [x.strip() for x in genes_field.split(',')]
+                    genes_list = [x.strip() for x in genes_field.split(",")]
                 else:
                     genes_list = genes_field
                 if symbol in genes_list:
@@ -161,12 +157,13 @@ if __name__ == "__main__":
     # Example usage
     results = biomarker_discovery_workflow(
         candidate_genes=["BRCA1", "BRCA2", "TP53", "PTEN", "PIK3CA"],
-        cancer_type="Breast cancer"
+        cancer_type="Breast cancer",
     )
-    
+
     print(f"\nResults summary:")
     print(f"- Cancer type: {results['cancer_type']}")
     print(f"- Genes analyzed: {len(results['genes'])}")
     print(f"- Literature hits: {results['literature_hits']}")
-    print(f"- Top biomarkers: {[b['symbol'] for b in results['ranked_biomarkers'][:3]]}")
-
+    print(
+        f"- Top biomarkers: {[b['symbol'] for b in results['ranked_biomarkers'][:3]]}"
+    )

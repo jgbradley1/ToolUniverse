@@ -1,8 +1,11 @@
 import json
 import os
 import warnings
+
 # Suppress RDKit warnings and pkg_resources warnings
-warnings.filterwarnings("ignore", category=RuntimeWarning, module="importlib._bootstrap")
+warnings.filterwarnings(
+    "ignore", category=RuntimeWarning, module="importlib._bootstrap"
+)
 warnings.filterwarnings("ignore", message=".*RDKit.*")
 warnings.filterwarnings("ignore", message=".*pkg_resources.*")
 
@@ -30,12 +33,16 @@ def summarize_result(tool_name, res):
 
         if tool_name == "odphp_myhealthfinder":
             heading = data.get("MyHFHeading", "")
-            resources = (data.get("Resources", {}).get("All", {}).get("Resource", [])) or []
+            resources = (
+                data.get("Resources", {}).get("All", {}).get("Resource", [])
+            ) or []
             first_title = resources[0].get("Title") if resources else None
             msg += f" | Heading='{heading[:60]}...'"
             if first_title:
                 msg += f" | FirstResource='{first_title}'"
-            callouts = (data.get("Callouts", {}).get("All", {}).get("Resource", [])) or []
+            callouts = (
+                data.get("Callouts", {}).get("All", {}).get("Resource", [])
+            ) or []
             if callouts and callouts[0].get("MyHFTitle"):
                 msg += f" | FirstCallout='{callouts[0].get('MyHFTitle')}'"
 
@@ -73,20 +80,28 @@ def summarize_result(tool_name, res):
 
 
 def test_01_myhealthfinder_valid():
-    res = tooluni.run({"name": "odphp_myhealthfinder",
-                       "arguments": {"age": 35, "sex": "female", "pregnant": "no", "lang": "en"}})
+    res = tooluni.run(
+        {
+            "name": "odphp_myhealthfinder",
+            "arguments": {"age": 35, "sex": "female", "pregnant": "no", "lang": "en"},
+        }
+    )
     print(summarize_result("odphp_myhealthfinder", res))
     assert isinstance(res, dict) and not res.get("error")
 
 
 def test_02_itemlist_valid():
-    res = tooluni.run({"name": "odphp_itemlist", "arguments": {"type": "topic", "lang": "en"}})
+    res = tooluni.run(
+        {"name": "odphp_itemlist", "arguments": {"type": "topic", "lang": "en"}}
+    )
     print(summarize_result("odphp_itemlist", res))
     assert isinstance(res, dict) and not res.get("error")
 
 
 def test_03_topicsearch_keyword_valid():
-    res = tooluni.run({"name": "odphp_topicsearch", "arguments": {"keyword": "cancer", "lang": "en"}})
+    res = tooluni.run(
+        {"name": "odphp_topicsearch", "arguments": {"keyword": "cancer", "lang": "en"}}
+    )
     print(summarize_result("odphp_topicsearch", res))
     assert isinstance(res, dict) and not res.get("error")
 
@@ -100,8 +115,16 @@ def test_04_invalid_types_fail_fast():
 
 
 def test_05_sections_case_and_strip_html():
-    res = tooluni.run({"name": "odphp_topicsearch",
-                       "arguments": {"keyword": "Keep Your Heart Healthy", "lang": "en", "strip_html": True}})
+    res = tooluni.run(
+        {
+            "name": "odphp_topicsearch",
+            "arguments": {
+                "keyword": "Keep Your Heart Healthy",
+                "lang": "en",
+                "strip_html": True,
+            },
+        }
+    )
     print(summarize_result("odphp_topicsearch", res))
     assert isinstance(res, dict) and not res.get("error")
     data = res.get("data") or {}
@@ -115,8 +138,9 @@ def test_05_sections_case_and_strip_html():
 
 def test_06_outlink_fetch_accessible_version():
     url = "https://odphp.health.gov/myhealthfinder/health-conditions/heart-health/keep-your-heart-healthy"
-    res = tooluni.run({"name": "odphp_outlink_fetch",
-                       "arguments": {"urls": [url], "max_chars": 4000}})
+    res = tooluni.run(
+        {"name": "odphp_outlink_fetch", "arguments": {"urls": [url], "max_chars": 4000}}
+    )
     print(summarize_result("odphp_outlink_fetch", res))
     assert isinstance(res, dict) and not res.get("error")
     results = res.get("results") or []
@@ -126,23 +150,31 @@ def test_06_outlink_fetch_accessible_version():
 
 
 def test_07_itemlist_spanish():
-    res = tooluni.run({"name": "odphp_itemlist", "arguments": {"type": "topic", "lang": "es"}})
+    res = tooluni.run(
+        {"name": "odphp_itemlist", "arguments": {"type": "topic", "lang": "es"}}
+    )
     print(summarize_result("odphp_itemlist", res))
     assert isinstance(res, dict) and not res.get("error")
 
 
 def test_08_topicsearch_by_category():
-    cats = tooluni.run({"name": "odphp_itemlist", "arguments": {"type": "category", "lang": "en"}})
+    cats = tooluni.run(
+        {"name": "odphp_itemlist", "arguments": {"type": "category", "lang": "en"}}
+    )
     first_cat = (cats.get("data", {}).get("Items", {}).get("Item") or [])[0]
     cid = first_cat.get("Id")
-    res = tooluni.run({"name": "odphp_topicsearch", "arguments": {"categoryId": cid, "lang": "en"}})
+    res = tooluni.run(
+        {"name": "odphp_topicsearch", "arguments": {"categoryId": cid, "lang": "en"}}
+    )
     print(summarize_result("odphp_topicsearch", res))
     assert isinstance(res, dict) and not res.get("error")
 
+
 def test_09_outlink_fetch_pdf():
     url = "https://odphp.health.gov/sites/default/files/2021-12/DGA_Pregnancy_FactSheet-508.pdf"
-    res = tooluni.run({"name": "odphp_outlink_fetch",
-                       "arguments": {"urls": [url], "max_chars": 1000}})
+    res = tooluni.run(
+        {"name": "odphp_outlink_fetch", "arguments": {"urls": [url], "max_chars": 1000}}
+    )
     print(summarize_result("odphp_outlink_fetch_pdf", res))
 
     assert isinstance(res, dict) and not res.get("error")

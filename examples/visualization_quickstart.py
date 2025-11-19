@@ -21,14 +21,16 @@ print("=" * 50)
 
 # 1. Protein 3D Structure Visualization
 print("\n1. 🧬 Protein 3D Structure")
-result = tu.run({
-    "name": "visualize_protein_structure_3d",
-    "arguments": {
-        "pdb_id": "1CRN",  # Crambin protein
-        "style": "cartoon",
-        "color_scheme": "spectrum"
+result = tu.run(
+    {
+        "name": "visualize_protein_structure_3d",
+        "arguments": {
+            "pdb_id": "1CRN",  # Crambin protein
+            "style": "cartoon",
+            "color_scheme": "spectrum",
+        },
     }
-})
+)
 
 if result["success"]:
     print("✅ Protein structure visualized!")
@@ -41,14 +43,16 @@ else:
 
 # 2. Molecule 2D Structure Visualization
 print("\n2. 🧪 Molecule 2D Structure")
-result = tu.run({
-    "name": "visualize_molecule_2d",
-    "arguments": {
-        "smiles": "CCO",  # Ethanol
-        "width": 400,
-        "height": 400
+result = tu.run(
+    {
+        "name": "visualize_molecule_2d",
+        "arguments": {
+            "smiles": "CCO",  # Ethanol
+            "width": 400,
+            "height": 400,
+        },
     }
-})
+)
 
 if result["success"]:
     print("✅ Molecule 2D structure visualized!")
@@ -60,14 +64,16 @@ else:
 
 # 3. Molecule 3D Structure Visualization
 print("\n3. 🔬 Molecule 3D Structure")
-result = tu.run({
-    "name": "visualize_molecule_3d",
-    "arguments": {
-        "smiles": "CCO",  # Ethanol
-        "style": "stick",
-        "color_scheme": "default"
+result = tu.run(
+    {
+        "name": "visualize_molecule_3d",
+        "arguments": {
+            "smiles": "CCO",  # Ethanol
+            "style": "stick",
+            "color_scheme": "default",
+        },
     }
-})
+)
 
 if result["success"]:
     print("✅ Molecule 3D structure visualized!")

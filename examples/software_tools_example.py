@@ -59,7 +59,7 @@ def main():
             package_name = (
                 query["name"].replace("get_", "").replace("_info", "").replace("_", "-")
             )
-            print(f"\n[{idx+1}] Testing {package_name}...")
+            print(f"\n[{idx + 1}] Testing {package_name}...")
             print(f"    Tool: {query['name']}")
             print(f"    Args: {query['arguments']}")
             print("-" * 50)
@@ -117,7 +117,7 @@ def main():
     print(f"✅ Successful: {successful_tests}")
     print(f"❌ Failed: {failed_tests}")
     print(
-        f"📊 Success Rate: {successful_tests/(successful_tests+failed_tests)*100:.1f}%"
+        f"📊 Success Rate: {successful_tests / (successful_tests + failed_tests) * 100:.1f}%"
     )
 
     print(f"\n📋 Tested {len(software_tools)} packages:")

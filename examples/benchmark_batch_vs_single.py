@@ -98,25 +98,48 @@ def _print_stats(label: str, timings: Iterable[float]) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--calls", type=int, default=200, help="Total number of tool calls to execute")
+    parser.add_argument(
+        "--calls", type=int, default=200, help="Total number of tool calls to execute"
+    )
     parser.add_argument(
         "--duplicates",
         type=int,
         default=0,
         help="Number of unique argument sets to cycle through (0 means all unique)",
     )
-    parser.add_argument("--cache", action="store_true", help="Enable ToolUniverse result caching")
-    parser.add_argument("--max-workers", type=int, default=8, help="Parallel worker count for batch execution")
-    parser.add_argument("--min-delay", type=float, default=0.0, help="Minimum simulated delay per tool call (seconds)")
-    parser.add_argument("--max-delay", type=float, default=0.0, help="Maximum simulated delay per tool call (seconds)")
+    parser.add_argument(
+        "--cache", action="store_true", help="Enable ToolUniverse result caching"
+    )
+    parser.add_argument(
+        "--max-workers",
+        type=int,
+        default=8,
+        help="Parallel worker count for batch execution",
+    )
+    parser.add_argument(
+        "--min-delay",
+        type=float,
+        default=0.0,
+        help="Minimum simulated delay per tool call (seconds)",
+    )
+    parser.add_argument(
+        "--max-delay",
+        type=float,
+        default=0.0,
+        help="Maximum simulated delay per tool call (seconds)",
+    )
     parser.add_argument(
         "--mode",
         choices=("both", "batch", "sequential"),
         default="both",
         help="Which benchmark(s) to run",
     )
-    parser.add_argument("--warmup", type=int, default=1, help="Number of warmup runs for each benchmark")
-    parser.add_argument("--repeats", type=int, default=3, help="Number of timed runs for each benchmark")
+    parser.add_argument(
+        "--warmup", type=int, default=1, help="Number of warmup runs for each benchmark"
+    )
+    parser.add_argument(
+        "--repeats", type=int, default=3, help="Number of timed runs for each benchmark"
+    )
     args = parser.parse_args()
 
     print("=== ToolUniverse Batch vs Sequential Benchmark ===")
@@ -155,7 +178,9 @@ def main():
     batch_timings = []
 
     if args.mode in ("both", "sequential"):
-        seq_timings = _time_call(run_sequential, warmup=args.warmup, repeats=args.repeats)
+        seq_timings = _time_call(
+            run_sequential, warmup=args.warmup, repeats=args.repeats
+        )
         _print_stats("Sequential", seq_timings)
 
     if args.mode in ("both", "batch"):

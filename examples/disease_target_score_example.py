@@ -38,9 +38,9 @@ def test_disease_target_score_tools():
         print(f"Testing {name}...")
         result = engine.run_one_function({"name": tool_name, "arguments": args})
         print(f"\033[92m{result}\033[0m")
-        assert (
-            result and result.get("total_targets_with_scores", 0) > 0
-        ), f"{name} failed"
+        assert result and result.get("total_targets_with_scores", 0) > 0, (
+            f"{name} failed"
+        )
         print(f"✅ Found {result['total_targets_with_scores']} targets")
 
     print("🎉 All tests passed!")

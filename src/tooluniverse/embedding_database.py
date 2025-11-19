@@ -551,7 +551,7 @@ class EmbeddingDatabase(BaseTool):
                             raise batch_error
 
                         self.logger.warning(
-                            f"Batch {_i//batch_size + 1} failed, retrying ({retry_count}/{max_retries})"
+                            f"Batch {_i // batch_size + 1} failed, retrying ({retry_count}/{max_retries})"
                         )
                         time.sleep(retry_count * 2)  # Exponential backoff
 

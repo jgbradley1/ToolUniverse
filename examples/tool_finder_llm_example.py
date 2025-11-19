@@ -11,7 +11,9 @@ import traceback
 import warnings
 
 # Suppress RDKit warnings and pkg_resources warnings
-warnings.filterwarnings("ignore", category=RuntimeWarning, module="importlib._bootstrap")
+warnings.filterwarnings(
+    "ignore", category=RuntimeWarning, module="importlib._bootstrap"
+)
 warnings.filterwarnings("ignore", message=".*RDKit.*")
 warnings.filterwarnings("ignore", message=".*pkg_resources.*")
 
@@ -59,12 +61,12 @@ def test_compatibility():
         assert isinstance(result2, tuple), f"Expected tuple, got {type(result2)}"
         assert len(result2) == 2, f"Expected tuple of length 2, got {len(result2)}"
         prompts, tool_names = result2
-        assert isinstance(
-            prompts, list
-        ), f"Expected prompts as list, got {type(prompts)}"
-        assert isinstance(
-            tool_names, list
-        ), f"Expected tool_names as list, got {type(tool_names)}"
+        assert isinstance(prompts, list), (
+            f"Expected prompts as list, got {type(prompts)}"
+        )
+        assert isinstance(tool_names, list), (
+            f"Expected tool_names as list, got {type(tool_names)}"
+        )
         print(
             f"  Result: ({type(prompts)}, {type(tool_names)}) with {len(tool_names)} tools ✓"
         )
@@ -78,9 +80,9 @@ def test_compatibility():
         }
         result3 = llm_finder.run(arguments)
         # Note: run() method returns string, not list (different from find_tools())
-        assert isinstance(
-            result3, str
-        ), f"Expected string from run(), got {type(result3)}"
+        assert isinstance(result3, str), (
+            f"Expected string from run(), got {type(result3)}"
+        )
         print(f"  Run method result type: {type(result3)} ✓")
 
         # Test 4: run() with return_call_result=True
@@ -91,9 +93,9 @@ def test_compatibility():
             "return_call_result": True,
         }
         result4 = llm_finder.run(arguments_with_result)
-        assert isinstance(
-            result4, tuple
-        ), f"Expected tuple from run(), got {type(result4)}"
+        assert isinstance(result4, tuple), (
+            f"Expected tuple from run(), got {type(result4)}"
+        )
         print(f"  Run method with return_call_result: {type(result4)} ✓")
 
         # Test 5: test with picked_tool_names (original interface)
@@ -102,9 +104,9 @@ def test_compatibility():
         result5 = llm_finder.find_tools(
             picked_tool_names=test_tools, return_call_result=False
         )
-        assert isinstance(
-            result5, list
-        ), f"Expected list with picked_tool_names, got {type(result5)}"
+        assert isinstance(result5, list), (
+            f"Expected list with picked_tool_names, got {type(result5)}"
+        )
         print(f"  Picked tools result type: {type(result5)} ✓")
 
         # Test 6: test picked_tool_names with return_call_result=True
@@ -114,17 +116,17 @@ def test_compatibility():
         result6 = llm_finder.find_tools(
             picked_tool_names=test_tools, return_call_result=True
         )
-        assert isinstance(
-            result6, tuple
-        ), f"Expected tuple with picked_tool_names, got {type(result6)}"
+        assert isinstance(result6, tuple), (
+            f"Expected tuple with picked_tool_names, got {type(result6)}"
+        )
         prompts6, names6 = result6
-        assert isinstance(
-            prompts6, list
-        ), f"Expected prompts as list, got {type(prompts6)}"
+        assert isinstance(prompts6, list), (
+            f"Expected prompts as list, got {type(prompts6)}"
+        )
         assert isinstance(names6, list), f"Expected names as list, got {type(names6)}"
-        assert len(names6) <= len(
-            test_tools
-        ), f"Expected names count <= input, got {len(names6)} > {len(test_tools)}"
+        assert len(names6) <= len(test_tools), (
+            f"Expected names count <= input, got {len(names6)} > {len(test_tools)}"
+        )
         print(
             f"  Picked tools with return_call_result: ({type(prompts6)}, {type(names6)}) ✓"
         )
@@ -183,9 +185,9 @@ def test_error_handling():
         # Test with empty picked_tool_names
         print("✓ Testing with empty picked_tool_names...")
         result = llm_finder.find_tools(picked_tool_names=[], return_call_result=False)
-        assert isinstance(
-            result, list
-        ), f"Expected list with empty picked_tool_names, got {type(result)}"
+        assert isinstance(result, list), (
+            f"Expected list with empty picked_tool_names, got {type(result)}"
+        )
         assert len(result) == 0, f"Expected empty result, got {len(result)} items"
         print("  ✓ Empty picked_tool_names handled correctly")
 

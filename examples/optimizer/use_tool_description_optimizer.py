@@ -5,9 +5,11 @@ Minimal example: load optimizer tools and run ToolDescriptionOptimizer
 How to run:
   python examples/optimizer/use_tool_description_optimizer.py
 """
+
 from pathlib import Path
 
 import sys
+
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -48,8 +50,7 @@ def main() -> None:
                 "save_to_file": True,
                 "output_file": str(
                     (
-                        Path(__file__).parent
-                        / f"{tool_name}_optimized_description.txt"
+                        Path(__file__).parent / f"{tool_name}_optimized_description.txt"
                     ).resolve()
                 ),
             },

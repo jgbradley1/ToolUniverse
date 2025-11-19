@@ -2,6 +2,7 @@
 """
 测试 MCP stdio 模式下关闭和开启 hooks 的情况
 """
+
 import subprocess
 import json
 import time
@@ -10,9 +11,9 @@ import sys
 
 def run_stdio_test(hooks_enabled=False):
     """运行 stdio 测试"""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"测试模式: {'开启 hooks' if hooks_enabled else '关闭 hooks'}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # 构建命令
     cmd = [
@@ -238,9 +239,9 @@ def main():
     result_with_hooks = run_stdio_test(hooks_enabled=True)
 
     # 对比结果
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("测试结果对比")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     print("关闭 hooks:")
     if result_no_hooks["success"]:

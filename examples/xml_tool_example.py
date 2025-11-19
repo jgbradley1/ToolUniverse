@@ -104,7 +104,7 @@ test_queries = test_queries
 
 # Run all test queries (with timeout and error handling)
 for idx, query in enumerate(test_queries):
-    print(f"\n[{idx+1}] Running tool: {query['name']}")
+    print(f"\n[{idx + 1}] Running tool: {query['name']}")
     print(f"Arguments: {query['arguments']}")
     print("-" * 60)
 
@@ -112,7 +112,7 @@ for idx, query in enumerate(test_queries):
         start_time = time.time()
         result = tooluni.run(query)
         end_time = time.time()
-        
+
         print(f"✅ Success! (took {end_time - start_time:.2f}s)")
         print(json.dumps(result, indent=2, ensure_ascii=False))
     except Exception as e:

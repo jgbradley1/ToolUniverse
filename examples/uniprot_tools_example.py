@@ -20,12 +20,14 @@ tu = ToolUniverse()
 tu.load_tools()
 print("✅ ToolUniverse loaded successfully\n")
 
-result1 = tu.run({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {
-        "accession": "Q6ZNX1",
+result1 = tu.run(
+    {
+        "name": "UniProt_get_entry_by_accession",
+        "arguments": {
+            "accession": "Q6ZNX1",
+        },
     }
-})
+)
 print(result1)
 exit()
 # =============================================================================
@@ -37,14 +39,12 @@ print("=" * 80)
 
 # Example 1: Search by gene name
 print("\n1.1 Searching for MEIOB gene in humans...")
-result1 = tu.run({
-    "name": "UniProt_search",
-    "arguments": {
-        "query": "gene:MEIOB",
-        "organism": "human",
-        "limit": 3
+result1 = tu.run(
+    {
+        "name": "UniProt_search",
+        "arguments": {"query": "gene:MEIOB", "organism": "human", "limit": 3},
     }
-})
+)
 
 if "results" in result1 and len(result1["results"]) > 0:
     protein = result1["results"][0]
@@ -54,42 +54,46 @@ if "results" in result1 and len(result1["results"]) > 0:
     print(f"   Gene names: {protein['gene_names']}")
     print(f"   Organism: {protein['organism']}")
     print(f"   Length: {protein['length']} residues")
-    MEIOB_ACCESSION = protein['accession']
+    MEIOB_ACCESSION = protein["accession"]
 else:
     print("   ❌ No results found")
     MEIOB_ACCESSION = "Q5SWX9"  # Fallback for testing
 
 # Example 2: Search by protein name
 print("\n1.2 Searching for p53 protein...")
-result2 = tu.run({
-    "name": "UniProt_search",
-    "arguments": {
-        "query": 'protein_name:"tumor protein p53"',
-        "organism": "human",
-        "limit": 2
+result2 = tu.run(
+    {
+        "name": "UniProt_search",
+        "arguments": {
+            "query": 'protein_name:"tumor protein p53"',
+            "organism": "human",
+            "limit": 2,
+        },
     }
-})
+)
 
 if "results" in result2 and len(result2["results"]) > 0:
     p53 = result2["results"][0]
     print(f"   ✅ Found: {p53['protein_name']}")
     print(f"   Accession: {p53['accession']}")
     print(f"   Gene names: {p53['gene_names']}")
-    TP53_ACCESSION = p53['accession']
+    TP53_ACCESSION = p53["accession"]
 else:
     print("   ❌ No results found")
     TP53_ACCESSION = "P04637"
 
 # Example 3: Advanced search with multiple criteria
 print("\n1.3 Advanced search: reviewed human proteins related to apoptosis...")
-result3 = tu.run({
-    "name": "UniProt_search",
-    "arguments": {
-        "query": "apoptosis AND reviewed:true",
-        "organism": "human",
-        "limit": 5
+result3 = tu.run(
+    {
+        "name": "UniProt_search",
+        "arguments": {
+            "query": "apoptosis AND reviewed:true",
+            "organism": "human",
+            "limit": 5,
+        },
     }
-})
+)
 
 if "results" in result3:
     print(f"   ✅ Found {result3['total_results']} proteins")
@@ -106,31 +110,37 @@ print("=" * 80)
 
 # Example 1: Map gene names to UniProt accessions
 print("\n2.1 Mapping gene names to UniProt accessions...")
-result4 = tu.run({
-    "name": "UniProt_id_mapping",
-    "arguments": {
-        "ids": ["MEIOB", "TP53", "EGFR"],
-        "from_db": "Gene_Name",
-        "to_db": "UniProtKB"
+result4 = tu.run(
+    {
+        "name": "UniProt_id_mapping",
+        "arguments": {
+            "ids": ["MEIOB", "TP53", "EGFR"],
+            "from_db": "Gene_Name",
+            "to_db": "UniProtKB",
+        },
     }
-})
+)
 
 if "results" in result4:
     print(f"   ✅ Mapped {result4['mapped_count']} gene names")
     for mapping in result4["results"][:3]:
-        print(f"   {mapping['from']} → {mapping['to']['accession']} "
-              f"({mapping['to']['id']})")
+        print(
+            f"   {mapping['from']} → {mapping['to']['accession']} "
+            f"({mapping['to']['id']})"
+        )
 
 # Example 2: Map Ensembl IDs to UniProt
 print("\n2.2 Mapping Ensembl IDs to UniProt accessions...")
-result5 = tu.run({
-    "name": "UniProt_id_mapping",
-    "arguments": {
-        "ids": ["ENSG00000141510", "ENSG00000134057"],
-        "from_db": "Ensembl",
-        "to_db": "UniProtKB"
+result5 = tu.run(
+    {
+        "name": "UniProt_id_mapping",
+        "arguments": {
+            "ids": ["ENSG00000141510", "ENSG00000134057"],
+            "from_db": "Ensembl",
+            "to_db": "UniProtKB",
+        },
     }
-})
+)
 
 if "results" in result5:
     print(f"   ✅ Mapped {result5['mapped_count']} Ensembl IDs")
@@ -149,10 +159,12 @@ TEST_ACCESSION = "P05067"  # Amyloid-beta precursor protein
 
 # Example 1: Get complete entry
 print("\n3.1 Getting complete protein entry...")
-result6 = tu.run({
-    "name": "UniProt_get_entry_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result6 = tu.run(
+    {
+        "name": "UniProt_get_entry_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result6, dict) and "error" not in result6:
     print(f"   ✅ Retrieved entry: {result6.get('uniProtkbId', 'Unknown')}")
@@ -162,10 +174,12 @@ else:
 
 # Example 2: Get function information
 print("\n3.2 Getting function annotation...")
-result7 = tu.run({
-    "name": "UniProt_get_function_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result7 = tu.run(
+    {
+        "name": "UniProt_get_function_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result7, list) and len(result7) > 0:
     print(f"   ✅ Found {len(result7)} function descriptions")
@@ -177,38 +191,46 @@ else:
 
 # Example 3: Get protein names
 print("\n3.3 Getting protein names...")
-result8 = tu.run({
-    "name": "UniProt_get_recommended_name_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result8 = tu.run(
+    {
+        "name": "UniProt_get_recommended_name_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result8, str):
     print(f"   ✅ Recommended name: {result8}")
     print("\n   Alternative names:")
-    result9 = tu.run({
-        "name": "UniProt_get_alternative_names_by_accession",
-        "arguments": {"accession": TEST_ACCESSION}
-    })
+    result9 = tu.run(
+        {
+            "name": "UniProt_get_alternative_names_by_accession",
+            "arguments": {"accession": TEST_ACCESSION},
+        }
+    )
     if isinstance(result9, list):
         for alt_name in result9[:3]:
             print(f"   - {alt_name}")
 
 # Example 4: Get organism information
 print("\n3.4 Getting organism information...")
-result10 = tu.run({
-    "name": "UniProt_get_organism_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result10 = tu.run(
+    {
+        "name": "UniProt_get_organism_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result10, str):
     print(f"   ✅ Organism: {result10}")
 
 # Example 5: Get subcellular location
 print("\n3.5 Getting subcellular location...")
-result11 = tu.run({
-    "name": "UniProt_get_subcellular_location_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result11 = tu.run(
+    {
+        "name": "UniProt_get_subcellular_location_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result11, list) and len(result11) > 0:
     print(f"   ✅ Found {len(result11)} subcellular locations:")
@@ -217,10 +239,12 @@ if isinstance(result11, list) and len(result11) > 0:
 
 # Example 6: Get sequence
 print("\n3.6 Getting protein sequence...")
-result12 = tu.run({
-    "name": "UniProt_get_sequence_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result12 = tu.run(
+    {
+        "name": "UniProt_get_sequence_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result12, str):
     print(f"   ✅ Sequence length: {len(result12)} amino acids")
@@ -228,33 +252,39 @@ if isinstance(result12, str):
 
 # Example 7: Get disease variants
 print("\n3.7 Getting disease variants...")
-result13 = tu.run({
-    "name": "UniProt_get_disease_variants_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result13 = tu.run(
+    {
+        "name": "UniProt_get_disease_variants_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result13, list):
     print(f"   ✅ Found {len(result13)} disease variants")
     for variant in result13[:2]:
-        location = variant.get('location', {})
+        location = variant.get("location", {})
         print(f"   Variant at {location.get('start')}-{location.get('end')}")
 
 # Example 8: Get PTM and processing sites
 print("\n3.8 Getting PTM and processing sites...")
-result14 = tu.run({
-    "name": "UniProt_get_ptm_processing_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result14 = tu.run(
+    {
+        "name": "UniProt_get_ptm_processing_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result14, list):
     print(f"   ✅ Found {len(result14)} modification sites")
 
 # Example 9: Get isoform IDs
 print("\n3.9 Getting isoform IDs...")
-result15 = tu.run({
-    "name": "UniProt_get_isoform_ids_by_accession",
-    "arguments": {"accession": TEST_ACCESSION}
-})
+result15 = tu.run(
+    {
+        "name": "UniProt_get_isoform_ids_by_accession",
+        "arguments": {"accession": TEST_ACCESSION},
+    }
+)
 
 if isinstance(result15, list) and len(result15) > 0:
     print(f"   ✅ Found {len(result15)} isoforms:")
@@ -278,36 +308,38 @@ print("    Step 4: Get sequence")
 
 try:
     # Step 1: Search for gene
-    workflow_result1 = tu.run({
-        "name": "UniProt_search",
-        "arguments": {
-            "query": "gene:BRCA1",
-            "organism": "human",
-            "limit": 1
+    workflow_result1 = tu.run(
+        {
+            "name": "UniProt_search",
+            "arguments": {"query": "gene:BRCA1", "organism": "human", "limit": 1},
         }
-    })
+    )
 
     if "results" in workflow_result1 and len(workflow_result1["results"]) > 0:
         brca1 = workflow_result1["results"][0]
-        brca1_acc = brca1['accession']
+        brca1_acc = brca1["accession"]
         print("\n   Step 1: ✅ Found BRCA1")
         print(f"   Accession: {brca1_acc}")
         print(f"   Protein: {brca1['protein_name']}")
 
         # Step 2: Get function
-        workflow_result2 = tu.run({
-            "name": "UniProt_get_function_by_accession",
-            "arguments": {"accession": brca1_acc}
-        })
+        workflow_result2 = tu.run(
+            {
+                "name": "UniProt_get_function_by_accession",
+                "arguments": {"accession": brca1_acc},
+            }
+        )
         print("\n   Step 2: ✅ Retrieved function")
         if isinstance(workflow_result2, list) and len(workflow_result2) > 0:
             print(f"   Function: {workflow_result2[0][:150]}...")
 
         # Step 3: Get sequence
-        workflow_result3 = tu.run({
-            "name": "UniProt_get_sequence_by_accession",
-            "arguments": {"accession": brca1_acc}
-        })
+        workflow_result3 = tu.run(
+            {
+                "name": "UniProt_get_sequence_by_accession",
+                "arguments": {"accession": brca1_acc},
+            }
+        )
         print("\n   Step 3: ✅ Retrieved sequence")
         if isinstance(workflow_result3, str):
             print(f"   Length: {len(workflow_result3)} amino acids")
@@ -334,9 +366,7 @@ def format_value(value, max_items=5, max_length=200):
         items_to_show = value[:max_items]
         items_str = "\n  - ".join(
             [
-                str(item)[:max_length] + (
-                    "..." if len(str(item)) > max_length else ""
-                )
+                str(item)[:max_length] + ("..." if len(str(item)) > max_length else "")
                 for item in items_to_show
             ]
         )

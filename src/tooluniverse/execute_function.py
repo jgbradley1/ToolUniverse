@@ -776,9 +776,9 @@ class ToolUniverse:
                 if cat not in exclude_categories_set
             ]
         else:
-            assert isinstance(
-                tool_type, list
-            ), "tool_type must be a list of tool category names"
+            assert isinstance(tool_type, list), (
+                "tool_type must be a list of tool category names"
+            )
             categories_to_load = [
                 cat for cat in tool_type if cat not in exclude_categories_set
             ]
@@ -2405,7 +2405,12 @@ class ToolUniverse:
                     new_tool = tool_class(tool_config=tool, tooluniverse=self)
                 elif "ToolFinderKeyword" == tool_type:
                     new_tool = tool_class(tool_config=tool, tooluniverse=self)
-                elif tool_type in ["ListTools", "GrepTools", "GetToolInfo", "ExecuteTool"]:
+                elif tool_type in [
+                    "ListTools",
+                    "GrepTools",
+                    "GetToolInfo",
+                    "ExecuteTool",
+                ]:
                     # Tool discovery tools need tooluniverse parameter
                     new_tool = tool_class(tool_config=tool, tooluniverse=self)
                 else:
