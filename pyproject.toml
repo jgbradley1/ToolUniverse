@@ -148,6 +148,12 @@ tooluniverse = { workspace = true }
 
 [tool.ruff]
 line-length = 88
+exclude = [
+    ".venv",
+    "docs",
+    "examples",
+]
+unsafe-fixes = true
 
 [tool.ruff.lint]
 ignore = ["E203", "E402", "E501", "F401", "F541"]
