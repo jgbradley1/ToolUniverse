@@ -288,9 +288,7 @@ class TestMCPIntegrationEdgeCases(unittest.TestCase):
 
             # Use the client
             try:
-                client_tool.run(
-                    {"name": "test_tool", "arguments": {"test": "value"}}
-                )
+                client_tool.run({"name": "test_tool", "arguments": {"test": "value"}})
             except Exception:
                 pass
 

@@ -377,13 +377,9 @@ class TestToolComposition(unittest.TestCase):
         for api in external_apis:
             try:
                 if "OpenTargets" in api:
-                    self.tu.run(
-                        {"name": api, "arguments": {"efoId": "EFO_0000305"}}
-                    )
+                    self.tu.run({"name": api, "arguments": {"efoId": "EFO_0000305"}})
                 elif "UniProt" in api:
-                    self.tu.run(
-                        {"name": api, "arguments": {"accession": "P05067"}}
-                    )
+                    self.tu.run({"name": api, "arguments": {"accession": "P05067"}})
                 else:  # ArXiv
                     self.tu.run(
                         {"name": api, "arguments": {"query": "test", "limit": 5}}
@@ -419,9 +415,7 @@ class TestToolComposition(unittest.TestCase):
                         {"name": tool_name, "arguments": {"query": "test", "limit": 5}}
                     )
                 else:
-                    self.tu.run(
-                        {"name": tool_name, "arguments": {"test": "data"}}
-                    )
+                    self.tu.run({"name": tool_name, "arguments": {"test": "data"}})
                 debug_info.append(f"step_{i}_success")
             except Exception as e:
                 debug_info.append(f"step_{i}_failed: {str(e)}")

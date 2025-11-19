@@ -195,8 +195,6 @@ class TestSpaceSchema:
             SPACE_SCHEMA["properties"]["llm_config"]["properties"]["mode"]["default"]
             == "default"
         )
-        assert (
-            SPACE_SCHEMA["properties"]["hooks"]["items"]["properties"]["enabled"][
-                "default"
-            ]
-        )
+        assert SPACE_SCHEMA["properties"]["hooks"]["items"]["properties"]["enabled"][
+            "default"
+        ]
