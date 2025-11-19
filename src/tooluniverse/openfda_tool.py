@@ -193,7 +193,7 @@ def search_openfda(
             value = value.replace(" and ", " ")  # remove 'and' in the search query
             value = value.replace(" AND ", " ")  # remove 'AND' in the search query
             # Remove quotes to avoid query errors
-            value = value.replace('"', '')
+            value = value.replace('"', "")
             value = value.replace("'", "")
             value = " ".join(value.split())
             if search_keyword_option == "AND":
@@ -839,11 +839,7 @@ class FDADrugLabelGetDrugNamesByIndicationAggregated(FDADrugLabelTool):
             iteration += 1
 
             # Prepare arguments for this batch
-            batch_arguments = {
-                "indication": indication,
-                "limit": step,
-                "skip": skip
-            }
+            batch_arguments = {"indication": indication, "limit": step, "skip": skip}
 
             # Call parent run method to get results
             batch_result = super().run(batch_arguments)
@@ -890,9 +886,9 @@ class FDADrugLabelGetDrugNamesByIndicationAggregated(FDADrugLabelTool):
                             if brand_name:
                                 normalized_brand = str(brand_name).strip()
                                 if normalized_brand:
-                                    aggregated_results[
-                                        normalized_generic
-                                    ].add(normalized_brand)
+                                    aggregated_results[normalized_generic].add(
+                                        normalized_brand
+                                    )
 
             total_fetched += len(results)
 
@@ -914,22 +910,22 @@ class FDADrugLabelGetDrugNamesByIndicationAggregated(FDADrugLabelTool):
 
         # Convert aggregated results to list format
         result_list = []
-        for generic_name, brand_names_set in sorted(
-            aggregated_results.items()
-        ):
-            result_list.append({
-                "generic_name": generic_name,
-                "indication": indication,
-                "brand_names": sorted(list(brand_names_set))
-            })
+        for generic_name, brand_names_set in sorted(aggregated_results.items()):
+            result_list.append(
+                {
+                    "generic_name": generic_name,
+                    "indication": indication,
+                    "brand_names": sorted(list(brand_names_set)),
+                }
+            )
 
         return {
             "meta": {
                 "total_generic_names": len(result_list),
                 "total_records_processed": total_fetched,
-                "indication": indication
+                "indication": indication,
             },
-            "results": result_list
+            "results": result_list,
         }
 
 
@@ -966,7 +962,7 @@ class FDADrugLabelGetDrugNamesByIndicationStats(FDADrugLabelTool):
         indication_processed = indication_processed.replace(" AND ", " ")
         indication_processed = " ".join(indication_processed.split())
         # Remove or escape quotes to avoid query errors
-        indication_processed = indication_processed.replace('"', '')
+        indication_processed = indication_processed.replace('"', "")
         indication_processed = indication_processed.replace("'", "")
         indication_query = indication_processed.replace(" ", "+")
         search_query = f'indications_and_usage:"{indication_query}"'
@@ -975,7 +971,7 @@ class FDADrugLabelGetDrugNamesByIndicationStats(FDADrugLabelTool):
         generic_count_params = {
             "search": search_query,
             "count": "openfda.generic_name.exact",
-            "limit": 1000  # Large limit to get all results
+            "limit": 1000,  # Large limit to get all results
         }
 
         generic_count_result = search_openfda(
@@ -1004,19 +1000,16 @@ class FDADrugLabelGetDrugNamesByIndicationStats(FDADrugLabelTool):
                 "meta": {
                     "total_generic_names": 0,
                     "total_brand_names": 0,
-                    "indication": indication
+                    "indication": indication,
                 },
-                "results": {
-                    "generic_names": [],
-                    "brand_names": []
-                }
+                "results": {"generic_names": [], "brand_names": []},
             }
 
         # Step 2: Get all brand names using count API (only 2 API calls total)
         brand_count_params = {
             "search": search_query,
             "count": "openfda.brand_name.exact",
-            "limit": 1000  # Large limit to get all results
+            "limit": 1000,  # Large limit to get all results
         }
 
         brand_count_result = search_openfda(
@@ -1043,40 +1036,28 @@ class FDADrugLabelGetDrugNamesByIndicationStats(FDADrugLabelTool):
 
         # Format generic names
         generic_names_list = [
-            {
-                "term": item.get("term", "").strip(),
-                "count": item.get("count", 0)
-            }
+            {"term": item.get("term", "").strip(), "count": item.get("count", 0)}
             for item in all_generic_names_data
             if item.get("term", "").strip()
         ]
-        generic_names_list = sorted(
-            generic_names_list,
-            key=lambda x: x["term"]
-        )
+        generic_names_list = sorted(generic_names_list, key=lambda x: x["term"])
 
         # Format brand names
         brand_names_list = [
-            {
-                "term": item.get("term", "").strip(),
-                "count": item.get("count", 0)
-            }
+            {"term": item.get("term", "").strip(), "count": item.get("count", 0)}
             for item in brand_names_data
             if item.get("term", "").strip()
         ]
-        brand_names_list = sorted(
-            brand_names_list,
-            key=lambda x: x["term"]
-        )
+        brand_names_list = sorted(brand_names_list, key=lambda x: x["term"])
 
         return {
             "meta": {
                 "total_generic_names": len(generic_names_list),
                 "total_brand_names": len(brand_names_list),
-                "indication": indication
+                "indication": indication,
             },
             "results": {
                 "generic_names": generic_names_list,
-                "brand_names": brand_names_list
-            }
+                "brand_names": brand_names_list,
+            },
         }

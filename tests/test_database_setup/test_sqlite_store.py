@@ -1,5 +1,6 @@
 from tooluniverse.database_setup.sqlite_store import SQLiteStore
 
+
 def test_sqlite_store_basic(tmp_db):
     store = SQLiteStore(tmp_db)
     store.upsert_collection("demo", description="Demo")

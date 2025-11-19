@@ -2,6 +2,7 @@ import os
 import pytest
 from tooluniverse.database_setup.embedder import Embedder
 
+
 @pytest.mark.api
 def test_embedder_real_backend_smoke():
     provider = os.getenv("EMBED_PROVIDER")

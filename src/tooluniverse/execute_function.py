@@ -435,9 +435,7 @@ class ToolUniverse:
                     # Use the same logic as _get_or_initialize_tool (line 2318)
                     # Try to instantiate with tool_config parameter
                     try:
-                        instance = tool_class(
-                            tool_config=tool_config
-                        )
+                        instance = tool_class(tool_config=tool_config)
                     except TypeError:
                         # If tool doesn't accept tool_config, try without parameters
                         instance = tool_class()

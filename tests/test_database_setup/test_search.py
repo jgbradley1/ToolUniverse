@@ -7,12 +7,14 @@ from tooluniverse.database_setup.vector_store import VectorStore
 from tooluniverse.database_setup.embedder import Embedder
 from tooluniverse.database_setup.search import SearchEngine
 
+
 def _resolve_provider_model_or_skip():
     prov = os.getenv("EMBED_PROVIDER")
     model = os.getenv("EMBED_MODEL") or os.getenv("AZURE_OPENAI_DEPLOYMENT")
     if not prov or not model:
         pytest.skip("Set EMBED_PROVIDER and EMBED_MODEL/AZURE_OPENAI_DEPLOYMENT")
     return prov, model
+
 
 @pytest.mark.api
 def test_search_engine_embedding(tmp_path):
@@ -24,13 +26,19 @@ def test_search_engine_embedding(tmp_path):
 
     store.upsert_collection("demo", embedding_model=model, embedding_dimensions=1536)
     docs = [
-        ("uuid-1", "Hypertension treatment guidelines for adults", {"topic": "bp"}, "h1"),
+        (
+            "uuid-1",
+            "Hypertension treatment guidelines for adults",
+            {"topic": "bp"},
+            "h1",
+        ),
         ("uuid-2", "Diabetes prevention programs in Germany", {"topic": "dm"}, "h2"),
     ]
     store.insert_docs("demo", docs)
 
     rows = store.fetch_docs("demo")
-    ids = [r["id"] for r in rows]; texts = [r["text"] for r in rows]
+    ids = [r["id"] for r in rows]
+    texts = [r["text"] for r in rows]
     emb = Embedder(provider=provider, model=model)
     vecs = emb.embed(texts).astype("float32")
     dim = int(vecs.shape[1])
@@ -44,6 +52,7 @@ def test_search_engine_embedding(tmp_path):
 
     assert isinstance(res, list) and len(res) >= 1
 
+
 @pytest.mark.api
 def test_search_engine_hybrid(tmp_path):
     provider, model = _resolve_provider_model_or_skip()
@@ -52,12 +61,26 @@ def test_search_engine_hybrid(tmp_path):
     store = SQLiteStore(db)
     vs = VectorStore(db)
     store.upsert_collection("demo", embedding_model=model, embedding_dimensions=1536)
-    store.insert_docs("demo", [
-        ("uuid-1", "Hypertension treatment guidelines for adults", {"topic":"bp"}, "h1"),
-        ("uuid-2", "Diabetes prevention programs in Germany", {"topic":"dm"}, "h2"),
-    ])
+    store.insert_docs(
+        "demo",
+        [
+            (
+                "uuid-1",
+                "Hypertension treatment guidelines for adults",
+                {"topic": "bp"},
+                "h1",
+            ),
+            (
+                "uuid-2",
+                "Diabetes prevention programs in Germany",
+                {"topic": "dm"},
+                "h2",
+            ),
+        ],
+    )
     rows = store.fetch_docs("demo")
-    ids = [r["id"] for r in rows]; texts = [r["text"] for r in rows]
+    ids = [r["id"] for r in rows]
+    texts = [r["text"] for r in rows]
     emb = Embedder(provider=provider, model=model)
     vecs = emb.embed(texts).astype("float32")
     dim = int(vecs.shape[1])

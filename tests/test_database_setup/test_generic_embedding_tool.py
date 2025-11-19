@@ -5,28 +5,43 @@ import pytest
 from tooluniverse.database_setup.sqlite_store import SQLiteStore
 from tooluniverse.database_setup.vector_store import VectorStore
 from tooluniverse.database_setup.embedder import Embedder
-from tooluniverse.database_setup.generic_embedding_search_tool import EmbeddingCollectionSearchTool
+from tooluniverse.database_setup.generic_embedding_search_tool import (
+    EmbeddingCollectionSearchTool,
+)
+
 
 def _require_online_env_or_fail():
     prov = os.getenv("EMBED_PROVIDER")
     assert prov in {"azure", "openai", "huggingface", "local"}, "Set EMBED_PROVIDER"
     if prov == "azure":
-        missing = [k for k in ["AZURE_OPENAI_API_KEY","AZURE_OPENAI_ENDPOINT","OPENAI_API_VERSION"] if not os.getenv(k)]
+        missing = [
+            k
+            for k in [
+                "AZURE_OPENAI_API_KEY",
+                "AZURE_OPENAI_ENDPOINT",
+                "OPENAI_API_VERSION",
+            ]
+            if not os.getenv(k)
+        ]
         assert not missing, f"Missing Azure vars: {missing}"
         model = os.getenv("EMBED_MODEL") or os.getenv("AZURE_OPENAI_DEPLOYMENT")
         assert model, "Set EMBED_MODEL or AZURE_OPENAI_DEPLOYMENT"
         return prov, model
     if prov == "openai":
         assert os.getenv("OPENAI_API_KEY"), "Missing OPENAI_API_KEY"
-        model = os.getenv("EMBED_MODEL"); assert model, "Set EMBED_MODEL"
+        model = os.getenv("EMBED_MODEL")
+        assert model, "Set EMBED_MODEL"
         return prov, model
     if prov == "huggingface":
         assert os.getenv("HF_TOKEN"), "Missing HF_TOKEN"
-        model = os.getenv("EMBED_MODEL"); assert model, "Set EMBED_MODEL"
+        model = os.getenv("EMBED_MODEL")
+        assert model, "Set EMBED_MODEL"
         return prov, model
     # local
-    model = os.getenv("EMBED_MODEL"); assert model, "Set EMBED_MODEL for local"
+    model = os.getenv("EMBED_MODEL")
+    assert model, "Set EMBED_MODEL for local"
     return prov, model
+
 
 @pytest.mark.api
 def test_generic_embedding_tool_hybrid_real(tmp_path):
@@ -36,7 +51,9 @@ def test_generic_embedding_tool_hybrid_real(tmp_path):
     store = SQLiteStore(db_path)
     vs = VectorStore(db_path)
 
-    store.upsert_collection("toy", description="Toy", embedding_model=model, embedding_dimensions=1536)
+    store.upsert_collection(
+        "toy", description="Toy", embedding_model=model, embedding_dimensions=1536
+    )
     docs = [
         ("d1", "Mitochondria is the powerhouse of the cell.", {"topic": "bio"}, "h1"),
         ("d2", "Insulin is a hormone regulating glucose.", {"topic": "med"}, "h2"),
@@ -55,10 +72,12 @@ def test_generic_embedding_tool_hybrid_real(tmp_path):
     doc_vecs = doc_vecs / (np.linalg.norm(doc_vecs, axis=1, keepdims=True) + 1e-12)
     vs.add_embeddings("toy", doc_ids, doc_vecs, dim=dim)
 
-    tool = EmbeddingCollectionSearchTool(tool_config={"fields": {"collection": "toy", "db_path": db_path}})
+    tool = EmbeddingCollectionSearchTool(
+        tool_config={"fields": {"collection": "toy", "db_path": db_path}}
+    )
     out = tool.run({"query": "glucose", "method": "hybrid", "top_k": 5, "alpha": 0.5})
 
     assert isinstance(out, list) and len(out) >= 1
     assert "snippet" in out[0]
-    texts_out = [r.get("text","").lower() for r in out]
+    texts_out = [r.get("text", "").lower() for r in out]
     assert any("glucose" in t for t in texts_out)
