@@ -44,7 +44,7 @@ class TestRemoteTools:
                 except ProcessLookupError:
                     pass
             self.server_process = None
-        
+
         if self.temp_config_file and os.path.exists(self.temp_config_file):
             os.remove(self.temp_config_file)
 
@@ -58,28 +58,30 @@ class TestRemoteTools:
                 "tool_prefix": "",
                 "server_url": server_url,
                 "timeout": 30,
-                "required_api_keys": []
+                "required_api_keys": [],
             }
         ]
-        
+
         # Create temporary file
-        fd, self.temp_config_file = tempfile.mkstemp(suffix='.json', prefix='remote_tools_test_')
+        fd, self.temp_config_file = tempfile.mkstemp(
+            suffix=".json", prefix="remote_tools_test_"
+        )
         os.close(fd)
-        
-        with open(self.temp_config_file, 'w') as f:
+
+        with open(self.temp_config_file, "w") as f:
             json.dump(config, f, indent=2)
-        
+
         return self.temp_config_file
 
     def test_remote_tools_config_creation(self):
         """Test remote tools configuration file creation"""
         config_file = self.create_remote_tools_config()
-        
+
         assert os.path.exists(config_file)
-        
-        with open(config_file, 'r') as f:
+
+        with open(config_file, "r") as f:
             config = json.load(f)
-        
+
         assert len(config) == 1
         assert config[0]["type"] == "MCPAutoLoaderTool"
         assert config[0]["server_url"] == "http://localhost:8008/mcp"
@@ -88,11 +90,11 @@ class TestRemoteTools:
     def test_tooluniverse_remote_tools_loading(self):
         """Test ToolUniverse loading remote tools configuration"""
         config_file = self.create_remote_tools_config()
-        
+
         # Load remote tools
         tu = ToolUniverse(tool_files={}, keep_default_tools=False)
         tu.load_tools(tool_config_files={"remote_tools": config_file})
-        
+
         # Should have loaded the MCPAutoLoaderTool
         assert len(tu.all_tools) >= 1
         assert "mcp_auto_loader_text_processor" in tu.all_tool_dict
@@ -100,15 +102,15 @@ class TestRemoteTools:
     def test_mcp_auto_loader_tool_instantiation(self):
         """Test MCPAutoLoaderTool instantiation with remote tools config"""
         config_file = self.create_remote_tools_config()
-        
+
         # Load remote tools
         tu = ToolUniverse(tool_files={}, keep_default_tools=False)
         tu.load_tools(tool_config_files={"remote_tools": config_file})
-        
+
         # Get the auto loader tool
         auto_loader_name = "mcp_auto_loader_text_processor"
         assert auto_loader_name in tu.all_tool_dict
-        
+
         # Test instantiation
         auto_loader = tu.callable_functions.get(auto_loader_name)
         if auto_loader:
@@ -121,18 +123,18 @@ class TestRemoteTools:
     async def test_mcp_auto_loader_tool_discovery_with_mock(self):
         """Test MCPAutoLoaderTool discovery with mocked server"""
         config_file = self.create_remote_tools_config()
-        
+
         # Load remote tools
         tu = ToolUniverse(tool_files={}, keep_default_tools=False)
         tu.load_tools(tool_config_files={"remote_tools": config_file})
-        
+
         # Get the auto loader tool
         auto_loader_name = "mcp_auto_loader_text_processor"
         auto_loader = tu.callable_functions.get(auto_loader_name)
-        
+
         if auto_loader:
             # Mock the MCP request
-            with patch.object(auto_loader, '_make_mcp_request') as mock_request:
+            with patch.object(auto_loader, "_make_mcp_request") as mock_request:
                 mock_request.return_value = {
                     "tools": [
                         {
@@ -142,33 +144,36 @@ class TestRemoteTools:
                                 "type": "object",
                                 "properties": {
                                     "text": {"type": "string"},
-                                    "operation": {"type": "string"}
+                                    "operation": {"type": "string"},
                                 },
-                                "required": ["text", "operation"]
-                            }
+                                "required": ["text", "operation"],
+                            },
                         }
                     ]
                 }
-                
+
                 # Test discovery
                 discovered = await auto_loader.discover_tools()
-                
+
                 assert len(discovered) == 1
                 assert "remote_text_processor" in discovered
-                assert discovered["remote_text_processor"]["description"] == "Processes text using remote computation resources"
+                assert (
+                    discovered["remote_text_processor"]["description"]
+                    == "Processes text using remote computation resources"
+                )
 
     def test_remote_tools_tool_discovery_workflow(self):
         """Test the complete remote tools discovery workflow"""
         config_file = self.create_remote_tools_config()
-        
+
         # Load remote tools
         tu = ToolUniverse(tool_files={}, keep_default_tools=False)
         tu.load_tools(tool_config_files={"remote_tools": config_file})
-        
+
         # Check that MCPAutoLoaderTool was loaded
         auto_loader_name = "mcp_auto_loader_text_processor"
         assert auto_loader_name in tu.all_tool_dict
-        
+
         # Check tool configuration
         tool_config = tu.all_tool_dict[auto_loader_name]
         assert tool_config["type"] == "MCPAutoLoaderTool"
@@ -178,9 +183,9 @@ class TestRemoteTools:
         """Test remote tools error handling"""
         # Test with invalid server URL
         config_file = self.create_remote_tools_config("http://invalid-server:9999/mcp")
-        
+
         tu = ToolUniverse(tool_files={}, keep_default_tools=False)
-        
+
         # Should not raise exception even with invalid server
         try:
             tu.load_tools(tool_config_files={"remote_tools": config_file})
@@ -197,20 +202,20 @@ class TestRemoteTools:
             {
                 "name": "invalid_loader",
                 "description": "Invalid loader for testing",
-                "type": "MCPAutoLoaderTool"
+                "type": "MCPAutoLoaderTool",
                 # Missing server_url
             }
         ]
-        
-        fd, temp_file = tempfile.mkstemp(suffix='.json', prefix='invalid_config_')
+
+        fd, temp_file = tempfile.mkstemp(suffix=".json", prefix="invalid_config_")
         os.close(fd)
-        
+
         try:
-            with open(temp_file, 'w') as f:
+            with open(temp_file, "w") as f:
                 json.dump(invalid_config, f, indent=2)
-            
+
             tu = ToolUniverse(tool_files={}, keep_default_tools=False)
-            
+
             # Should handle invalid config gracefully
             try:
                 tu.load_tools(tool_config_files={"remote_tools": temp_file})
@@ -232,24 +237,24 @@ class TestRemoteTools:
                 "tool_prefix": "custom_",
                 "server_url": "http://localhost:8008/mcp",
                 "timeout": 30,
-                "required_api_keys": []
+                "required_api_keys": [],
             }
         ]
-        
-        fd, temp_file = tempfile.mkstemp(suffix='.json', prefix='custom_prefix_')
+
+        fd, temp_file = tempfile.mkstemp(suffix=".json", prefix="custom_prefix_")
         os.close(fd)
-        
+
         try:
-            with open(temp_file, 'w') as f:
+            with open(temp_file, "w") as f:
                 json.dump(config, f, indent=2)
-            
+
             tu = ToolUniverse(tool_files={}, keep_default_tools=False)
             tu.load_tools(tool_config_files={"remote_tools": temp_file})
-            
+
             # Check that the auto loader was loaded with custom prefix
             auto_loader_name = "mcp_auto_loader_custom"
             assert auto_loader_name in tu.all_tool_dict
-            
+
             auto_loader = tu.callable_functions.get(auto_loader_name)
             if auto_loader:
                 assert auto_loader.tool_prefix == "custom_"
@@ -260,13 +265,13 @@ class TestRemoteTools:
     def test_remote_tools_timeout_configuration(self):
         """Test remote tools timeout configuration"""
         config_file = self.create_remote_tools_config()
-        
+
         tu = ToolUniverse(tool_files={}, keep_default_tools=False)
         tu.load_tools(tool_config_files={"remote_tools": config_file})
-        
+
         auto_loader_name = "mcp_auto_loader_text_processor"
         auto_loader = tu.callable_functions.get(auto_loader_name)
-        
+
         if auto_loader:
             assert auto_loader.timeout == 30
 
@@ -282,23 +287,23 @@ class TestRemoteTools:
                 "server_url": "http://localhost:8008/mcp",
                 "timeout": 30,
                 "auto_register": False,
-                "required_api_keys": []
+                "required_api_keys": [],
             }
         ]
-        
-        fd, temp_file = tempfile.mkstemp(suffix='.json', prefix='no_register_')
+
+        fd, temp_file = tempfile.mkstemp(suffix=".json", prefix="no_register_")
         os.close(fd)
-        
+
         try:
-            with open(temp_file, 'w') as f:
+            with open(temp_file, "w") as f:
                 json.dump(config, f, indent=2)
-            
+
             tu = ToolUniverse(tool_files={}, keep_default_tools=False)
             tu.load_tools(tool_config_files={"remote_tools": temp_file})
-            
+
             auto_loader_name = "mcp_auto_loader_no_register"
             assert auto_loader_name in tu.all_tool_dict
-            
+
             auto_loader = tu.callable_functions.get(auto_loader_name)
             if auto_loader:
                 assert auto_loader.auto_register is False
@@ -318,23 +323,23 @@ class TestRemoteTools:
                 "server_url": "http://localhost:8008/mcp",
                 "timeout": 30,
                 "selected_tools": ["remote_text_processor"],
-                "required_api_keys": []
+                "required_api_keys": [],
             }
         ]
-        
-        fd, temp_file = tempfile.mkstemp(suffix='.json', prefix='filtered_')
+
+        fd, temp_file = tempfile.mkstemp(suffix=".json", prefix="filtered_")
         os.close(fd)
-        
+
         try:
-            with open(temp_file, 'w') as f:
+            with open(temp_file, "w") as f:
                 json.dump(config, f, indent=2)
-            
+
             tu = ToolUniverse(tool_files={}, keep_default_tools=False)
             tu.load_tools(tool_config_files={"remote_tools": temp_file})
-            
+
             auto_loader_name = "mcp_auto_loader_filtered"
             assert auto_loader_name in tu.all_tool_dict
-            
+
             auto_loader = tu.callable_functions.get(auto_loader_name)
             if auto_loader:
                 assert auto_loader.selected_tools == ["remote_text_processor"]
@@ -353,7 +358,7 @@ class TestRemoteToolsEndToEnd:
         """Test the complete remote tools example workflow"""
         # This test would ideally start a real MCP server and test the complete workflow
         # For now, we'll test the configuration and loading parts
-        
+
         # Create configuration similar to the example
         config = [
             {
@@ -363,34 +368,34 @@ class TestRemoteToolsEndToEnd:
                 "tool_prefix": "",
                 "server_url": "http://localhost:8008/mcp",
                 "timeout": 30,
-                "required_api_keys": []
+                "required_api_keys": [],
             }
         ]
-        
-        fd, temp_file = tempfile.mkstemp(suffix='.json', prefix='e2e_test_')
+
+        fd, temp_file = tempfile.mkstemp(suffix=".json", prefix="e2e_test_")
         os.close(fd)
-        
+
         try:
-            with open(temp_file, 'w') as f:
+            with open(temp_file, "w") as f:
                 json.dump(config, f, indent=2)
-            
+
             # Test ToolUniverse initialization
             tu = ToolUniverse(tool_files={}, keep_default_tools=False)
-            
+
             # Test loading remote tools
             tu.load_tools(tool_config_files={"remote_tools": temp_file})
-            
+
             # Verify configuration was loaded
             assert len(tu.all_tools) >= 1
             assert "mcp_auto_loader_text_processor" in tu.all_tool_dict
-            
+
             # Verify tool configuration
             tool_config = tu.all_tool_dict["mcp_auto_loader_text_processor"]
             assert tool_config["type"] == "MCPAutoLoaderTool"
             assert tool_config["server_url"] == "http://localhost:8008/mcp"
             assert tool_config["tool_prefix"] == ""
             assert tool_config["timeout"] == 30
-            
+
         finally:
             if os.path.exists(temp_file):
                 os.remove(temp_file)

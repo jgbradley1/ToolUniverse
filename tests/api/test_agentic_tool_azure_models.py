@@ -26,7 +26,7 @@ except ImportError:
 # Chat-capable deployment IDs to test (skip embeddings)
 MODELS: List[str] = [
     "gpt-4.1",
-    "gpt-4.1-mini", 
+    "gpt-4.1-mini",
     "gpt-4.1-nano",
     "gpt-4o-1120",
     "gpt-4o-0806",
@@ -44,7 +44,7 @@ def model_id(request):
 
 @pytest.mark.skipif(
     not os.getenv("AZURE_OPENAI_ENDPOINT") or not os.getenv("AZURE_OPENAI_API_KEY"),
-    reason="Azure OpenAI credentials not available"
+    reason="Azure OpenAI credentials not available",
 )
 @pytest.mark.require_api_keys
 def test_model(model_id: str) -> None:
@@ -83,7 +83,7 @@ def test_model(model_id: str) -> None:
     try:
         out = tool.run({"q": "ping"})
         ok = isinstance(out, (str, dict))
-        output_str = str(out)[:120].replace('\n', ' ')
+        output_str = str(out)[:120].replace("\n", " ")
         print(f"- Run : {'OK' if ok else 'WARN'} -> {output_str}")
     except Exception as e:
         print(f"- Run : FAIL -> {e}")

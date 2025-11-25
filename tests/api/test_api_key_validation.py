@@ -25,7 +25,7 @@ except ImportError:
 
 @pytest.mark.skipif(
     not os.getenv("AZURE_OPENAI_ENDPOINT") or not os.getenv("AZURE_OPENAI_API_KEY"),
-    reason="Azure OpenAI credentials not available"
+    reason="Azure OpenAI credentials not available",
 )
 @pytest.mark.require_api_keys
 def test_api_key_validation():
@@ -51,7 +51,7 @@ def test_api_key_validation():
         tool = AgenticTool(config)
         result = tool.run({"q": "test"})
         print(f"✅ API key validation successful: {result}")
-        
+
         # Check if result is a dictionary with success field
         if isinstance(result, dict):
             assert result.get("success", False), "Expected successful result"
@@ -59,7 +59,7 @@ def test_api_key_validation():
             print(f"✅ API response: {result.get('result', 'No result')}")
         else:
             assert isinstance(result, str), "Expected string or dict result"
-            
+
     except Exception as e:
         print(f"❌ API key validation failed: {e}")
         pytest.fail(f"API key validation failed: {e}")

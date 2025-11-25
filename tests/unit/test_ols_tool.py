@@ -320,9 +320,7 @@ class TestSearchOntologies:
             },
             "page": {"number": 0, "size": 20, "totalPages": 1, "totalElements": 1},
         }
-        result = self.tool._handle_search_ontologies(
-            {"operation": "search_ontologies"}
-        )
+        result = self.tool._handle_search_ontologies({"operation": "search_ontologies"})
         assert "results" in result
         assert "pagination" in result
         assert result["pagination"]["page"] == 0
@@ -360,7 +358,9 @@ class TestGetTermInfo:
     def test_get_term_info_not_found(self, mock_get_json):
         """Test get_term_info when term not found."""
         mock_get_json.return_value = {"_embedded": {}}
-        result = self.tool._handle_get_term_info({"operation": "get_term_info", "id": "INVALID"})
+        result = self.tool._handle_get_term_info(
+            {"operation": "get_term_info", "id": "INVALID"}
+        )
         assert "error" in result
         assert "not found" in result["error"]
 

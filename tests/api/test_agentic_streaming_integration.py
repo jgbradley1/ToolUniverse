@@ -122,7 +122,9 @@ def _agentic_config(name="TestAgenticTool"):
 def _register_agentic_tool(tool_universe, tool_cls, config, client):
     tool_cls.client_factory = lambda: client
     instance = tool_cls(config)
-    tool_universe.register_custom_tool(tool_cls, tool_name=config["name"], tool_config=config)
+    tool_universe.register_custom_tool(
+        tool_cls, tool_name=config["name"], tool_config=config
+    )
     tool_universe.callable_functions[config["name"]] = instance
     tool_cls.client_factory = None
     return instance

@@ -10,14 +10,14 @@ import os
 from unittest.mock import patch, MagicMock
 
 # Add the src directory to the path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", "src"))
 
 from tooluniverse.geo_tool import GEORESTTool
 
 
 class TestGEOTool:
     """Test cases for GEO database tool"""
-    
+
     def setup_method(self):
         """Set up test fixtures"""
         self.tool_config = {
@@ -30,70 +30,62 @@ class TestGEOTool:
                     "query": {"type": "string"},
                     "organism": {"type": "string", "default": "Homo sapiens"},
                     "study_type": {"type": "string", "default": "expression"},
-                    "limit": {"type": "integer", "default": 10}
-                }
+                    "limit": {"type": "integer", "default": 10},
+                },
             },
-            "fields": {
-                "endpoint": "/esearch.fcgi",
-                "return_format": "JSON"
-            }
+            "fields": {"endpoint": "/esearch.fcgi", "return_format": "JSON"},
         }
         self.tool = GEORESTTool(self.tool_config)
-    
+
     def test_tool_initialization(self):
         """Test tool initialization"""
         assert self.tool.endpoint_template == "/esearch.fcgi"
         assert self.tool.required == ["query"]
         assert self.tool.output_format == "JSON"
-    
+
     def test_build_url(self):
         """Test URL building"""
         arguments = {"query": "cancer"}
         url = self.tool._build_url(arguments)
         assert url == "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
-    
+
     def test_build_params(self):
         """Test parameter building"""
         arguments = {
             "query": "cancer",
             "organism": "Homo sapiens",
             "study_type": "expression",
-            "limit": 10
+            "limit": 10,
         }
         params = self.tool._build_params(arguments)
-        
+
         assert params["db"] == "gds"
-        assert params["term"] == "cancer AND Homo sapiens[organism] AND \"expression\"[study_type]"
+        assert (
+            params["term"]
+            == 'cancer AND Homo sapiens[organism] AND "expression"[study_type]'
+        )
         assert params["retmode"] == "json"
         assert params["retmax"] == 10
-    
+
     def test_build_params_with_organism(self):
         """Test parameter building with organism specification"""
-        arguments = {
-            "query": "cancer",
-            "organism": "Mus musculus",
-            "limit": 5
-        }
+        arguments = {"query": "cancer", "organism": "Mus musculus", "limit": 5}
         params = self.tool._build_params(arguments)
-        
+
         expected_term = "cancer AND Mus musculus[organism]"
         assert params["term"] == expected_term
         assert params["retmax"] == 5
-    
+
     def test_build_params_with_study_type(self):
         """Test parameter building with study type"""
-        arguments = {
-            "query": "cancer",
-            "study_type": "methylation",
-            "limit": 20
-        }
+        arguments = {"query": "cancer", "study_type": "methylation", "limit": 20}
         params = self.tool._build_params(arguments)
-        
-        expected_term = "cancer AND \"methylation\"[study_type]"
+
+        expected_term = 'cancer AND "methylation"[study_type]'
         assert params["term"] == expected_term
         assert params["retmax"] == 20
-    
-    @patch('requests.get')
+
+    @patch("requests.get")
     def test_make_request_success(self, mock_get):
         """Test successful API request"""
         # Mock successful response
@@ -101,55 +93,56 @@ class TestGEOTool:
         mock_response.json.return_value = {
             "esearchresult": {
                 "idlist": ["200000001", "200000002", "200000003"],
-                "count": "3"
+                "count": "3",
             }
         }
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
-        
-        result = self.tool._make_request("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi", {})
-        
+
+        result = self.tool._make_request(
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi", {}
+        )
+
         assert "esearchresult" in result
         assert "idlist" in result["esearchresult"]
         assert len(result["esearchresult"]["idlist"]) == 3
         mock_get.assert_called_once()
-    
-    @patch('requests.get')
+
+    @patch("requests.get")
     def test_make_request_error(self, mock_get):
         """Test API request error handling"""
         mock_get.side_effect = Exception("Network error")
-        
-        result = self.tool._make_request("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi", {})
-        
+
+        result = self.tool._make_request(
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi", {}
+        )
+
         assert "error" in result
         assert "Network error" in result["error"]
-    
+
     def test_run_missing_required_params(self):
         """Test run method with missing required parameters"""
         result = self.tool.run({})
         assert "error" in result
         assert "Missing required parameter" in result["error"]
-    
-    @patch('requests.get')
+
+    @patch("requests.get")
     def test_run_success(self, mock_get):
         """Test successful run"""
         # Mock successful response
         mock_response = MagicMock()
         mock_response.json.return_value = {
-            "esearchresult": {
-                "idlist": ["200000001", "200000002"],
-                "count": "2"
-            }
+            "esearchresult": {"idlist": ["200000001", "200000002"], "count": "2"}
         }
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
-        
+
         arguments = {"query": "cancer AND Homo sapiens[organism]"}
         result = self.tool.run(arguments)
-        
+
         assert "esearchresult" in result
         assert len(result["esearchresult"]["idlist"]) == 2
-    
+
     def test_parse_search_results(self):
         """Test parsing of search results"""
         mock_data = {
@@ -157,10 +150,10 @@ class TestGEOTool:
                 "idlist": ["200000001", "200000002", "200000003"],
                 "count": "3",
                 "retmax": "3",
-                "retstart": "0"
+                "retstart": "0",
             }
         }
-        
+
         # Test that the data structure is preserved
         assert "esearchresult" in mock_data
         assert "idlist" in mock_data["esearchresult"]
@@ -169,22 +162,19 @@ class TestGEOTool:
 
 class TestGEOIntegration:
     """Integration tests for GEO tool"""
-    
+
     def test_geo_tool_real_api(self):
         """Test GEO tool with real API (if network available)"""
         tool_config = {
             "type": "GEORESTTool",
             "parameter": {"required": ["query"]},
-            "fields": {"endpoint": "/esearch.fcgi", "return_format": "JSON"}
+            "fields": {"endpoint": "/esearch.fcgi", "return_format": "JSON"},
         }
         tool = GEORESTTool(tool_config)
-        
+
         # Test with real query
-        arguments = {
-            "query": "cancer AND Homo sapiens[organism]",
-            "limit": 5
-        }
-        
+        arguments = {"query": "cancer AND Homo sapiens[organism]", "limit": 5}
+
         try:
             result = tool.run(arguments)
             # If successful, should have esearchresult
@@ -197,29 +187,21 @@ class TestGEOIntegration:
                 print(f"⚠️ GEO API test failed: {result.get('error', 'Unknown error')}")
         except Exception as e:
             print(f"⚠️ GEO API test error: {e}")
-    
+
     def test_geo_tool_different_organisms(self):
         """Test GEO tool with different organisms"""
         tool_config = {
             "type": "GEORESTTool",
             "parameter": {"required": ["query"]},
-            "fields": {"endpoint": "/esearch.fcgi", "return_format": "JSON"}
+            "fields": {"endpoint": "/esearch.fcgi", "return_format": "JSON"},
         }
         tool = GEORESTTool(tool_config)
-        
-        organisms = [
-            "Homo sapiens",
-            "Mus musculus", 
-            "Drosophila melanogaster"
-        ]
-        
+
+        organisms = ["Homo sapiens", "Mus musculus", "Drosophila melanogaster"]
+
         for organism in organisms:
-            arguments = {
-                "query": "cancer",
-                "organism": organism,
-                "limit": 3
-            }
-            
+            arguments = {"query": "cancer", "organism": organism, "limit": 3}
+
             try:
                 result = tool.run(arguments)
                 if "esearchresult" in result and not result.get("error"):

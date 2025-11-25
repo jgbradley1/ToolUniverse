@@ -7,12 +7,14 @@ from tooluniverse.database_setup.vector_store import VectorStore
 from tooluniverse.database_setup.embedder import Embedder
 from tooluniverse.database_setup.search import SearchEngine
 
+
 def _resolve_provider_model_or_skip():
     prov = os.getenv("EMBED_PROVIDER")
     model = os.getenv("EMBED_MODEL") or os.getenv("AZURE_OPENAI_DEPLOYMENT")
     if not prov or not model:
         pytest.skip("Set EMBED_PROVIDER and EMBED_MODEL/AZURE_OPENAI_DEPLOYMENT")
     return prov, model
+
 
 @pytest.mark.api
 def test_end_to_end_local(tmp_path):
@@ -22,11 +24,21 @@ def test_end_to_end_local(tmp_path):
     store = SQLiteStore(db_path)
     vs = VectorStore(db_path)
 
-    store.upsert_collection("integration_demo", description="Integration demo", embedding_model=model, embedding_dimensions=1536)
+    store.upsert_collection(
+        "integration_demo",
+        description="Integration demo",
+        embedding_model=model,
+        embedding_dimensions=1536,
+    )
     docs = [
-    ("uuid-10", "Hypertension treatment guidelines for adults", {"topic": "bp"}, "h10"),
-    ("uuid-11", "Diabetes prevention programs in Germany", {"topic": "dm"}, "h11"),
-    ("uuid-12", "hypertension", {"topic": "bp"}, "h12"), 
+        (
+            "uuid-10",
+            "Hypertension treatment guidelines for adults",
+            {"topic": "bp"},
+            "h10",
+        ),
+        ("uuid-11", "Diabetes prevention programs in Germany", {"topic": "dm"}, "h11"),
+        ("uuid-12", "hypertension", {"topic": "bp"}, "h12"),
     ]
     store.insert_docs("integration_demo", docs)
 
@@ -37,7 +49,9 @@ def test_end_to_end_local(tmp_path):
     emb = Embedder(provider=provider, model=model)
     vecs = emb.embed(texts).astype("float32")
     dim = int(vecs.shape[1])
-    store.upsert_collection("integration_demo", embedding_model=model, embedding_dimensions=dim)
+    store.upsert_collection(
+        "integration_demo", embedding_model=model, embedding_dimensions=dim
+    )
     vs.load_index("integration_demo", dim, reset=True)
     vecs = vecs / (np.linalg.norm(vecs, axis=1, keepdims=True) + 1e-12)
     vs.add_embeddings("integration_demo", ids, vecs, dim=dim)

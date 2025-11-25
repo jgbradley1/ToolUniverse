@@ -2,16 +2,17 @@ import numpy as np
 from tooluniverse.database_setup.sqlite_store import SQLiteStore
 from tooluniverse.database_setup.vector_store import VectorStore
 
+
 def test_vector_store_add_and_search(tmp_path):
     db_path = str(tmp_path / "test.db")
-    data_dir = tmp_path / "embeddings"   # isolate FAISS files
+    data_dir = tmp_path / "embeddings"  # isolate FAISS files
     store = SQLiteStore(db_path)
     vs = VectorStore(db_path, data_dir=str(data_dir))
 
     # Use a unique collection name for this test
     coll = "demo_vecstore"
     store.upsert_collection(coll, embedding_model="test-model", embedding_dimensions=4)
-    store.insert_docs(coll, [("k1", "blood pressure doc", {"topic":"bp"}, "h1")])
+    store.insert_docs(coll, [("k1", "blood pressure doc", {"topic": "bp"}, "h1")])
     row = store.fetch_docs(coll)[0]
     doc_id = row["id"]
 

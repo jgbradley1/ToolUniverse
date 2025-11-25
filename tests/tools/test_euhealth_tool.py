@@ -5,6 +5,7 @@ from tooluniverse.database_setup.hf.sync_hf import db_path_for_collection
 EU_DB = db_path_for_collection("euhealth")
 euhealth_present = os.path.exists(EU_DB)
 
+
 @pytest.mark.euhealth
 @pytest.mark.skipif(
     not euhealth_present,

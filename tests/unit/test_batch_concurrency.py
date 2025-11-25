@@ -60,10 +60,7 @@ def test_batch_respects_per_tool_concurrency():
     tool_instance = tu._get_tool_instance("SlowTool", cache=True)
     assert tool_instance.get_batch_concurrency_limit() == 3
 
-    calls = [
-        {"name": "SlowTool", "arguments": {"value": i}}
-        for i in range(20)
-    ]
+    calls = [{"name": "SlowTool", "arguments": {"value": i}} for i in range(20)]
 
     tu.run(calls, use_cache=False, max_workers=10)
 
